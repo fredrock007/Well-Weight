@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Siphelo’s WellWeight — Transform your body. Strengthen your life.</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <!-- ✅ Chart.js for Progress Tracker only -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root{
       --ink:#0b1512;--muted:#4a6b60;--bg:#f7fbf9;--card:#ffffff;--line:#e6efe9;
@@ -552,7 +554,7 @@
       ch.addEventListener('click', ()=> openModal(ch.dataset.modal));
     });
 
-    // --- Analytics Section Charts (on page load) ---
+    // --- Analytics Section Charts (on page load) (kept: custom canvas) ---
     const CLIENTS = [
       {name:'Thabo', pct:78}, {name:'Zanele', pct:54}, {name:'Chadwin', pct:88},
       {name:'Megan', pct:62}, {name:'Keagan', pct:70}, {name:'Lihle', pct:47},
@@ -581,31 +583,151 @@
        {label:'Endurance',v:16,color:'#a78bfa'}]);
     if(barA) drawBar(barA, ['Sipho','Bianca','Keagan','Lerato'], [40, 55, 33, 28], {color:'#2563eb'});
 
-    // ------- PROGRESS CHARTS DRAWER -------
-    function drawProgressCharts(done){
-      // helpers
-      const $ = id => document.getElementById(id);
-      // line
-      drawLine($('#progressLine'), [20,28,31,35,40,46,50,56], {label:'Strength', color:'#1e3a8a'});
-      // pie
-      drawPie($('#progressPie'),
-        [{label:'Fat Loss',v:34,color:'#0ea5e9'},
-         {label:'Strength',v:26,color:'#22c55e'},
-         {label:'Muscle Gain',v:22,color:'#06b6d4'},
-         {label:'Endurance',v:18,color:'#a78bfa'}]);
-      // rings
-      drawRing($('#ringThabo'), 78, 'Thabo', '#2563eb');
-      drawRing($('#ringMegan'), 62, 'Megan', '#0ea5e9');
-      drawRing($('#ringChadwin'), 88, 'Chadwin', '#10b981');
-      // bar
-      drawBar($('#progressBar'),
-        ['Sipho','Bianca','Keagan'],
-        [18, 22, 15],
-        {color:'#1e3a8a'});
-      if(typeof done==='function') done();
-    }
+    // ====================================================================================
+    // ✅ PROGRESS CHARTS (Chart.js) — ONLY for the Progress Tracking modal
+    // ====================================================================================
+    let _progressCharts = []; // hold instances to avoid duplicates on reopen
 
-    // ------- CANVAS DRAW HELPERS -------
+    function drawProgressCharts(done){
+      // Destroy any previous instances
+      if(_progressCharts.length){
+        _progressCharts.forEach(ch => { try{ ch.destroy(); }catch{} });
+        _progressCharts = [];
+      }
+
+      const lineEl = document.getElementById('progressLine');
+      const pieEl  = document.getElementById('progressPie');
+      const barEl  = document.getElementById('progressBar');
+      const ringTh = document.getElementById('ringThabo');
+      const ringMe = document.getElementById('ringMegan');
+      const ringCh = document.getElementById('ringChadwin');
+
+      // Multi-colour palette
+      const colors = {
+        blue: '#2563eb',
+        green: '#10b981',
+        teal:  '#14b8a6',
+        purple:'#7c3aed',
+        orange:'#f59e0b',
+        gray:  '#e5e7eb'
+      };
+
+      // Center text plugin for ring charts
+      const ringText = {
+        id:'ringText',
+        afterDraw(chart, args, opts){
+          const {ctx, chartArea:{width, height}} = chart;
+          const meta = chart.config.data._metaLabel || {};
+          ctx.save();
+          ctx.textAlign='center';
+          ctx.fillStyle='#0b1512';
+          ctx.font='bold 16px Inter';
+          ctx.fillText(`${meta.pct || 0}%`, width/2, height/2 + 6);
+          ctx.font='12px Inter';
+          ctx.fillStyle='#29443b';
+          ctx.fillText(meta.label || '', width/2, height/2 + 26);
+          ctx.restore();
+        }
+      };
+
+      // Create charts
+      if(lineEl){
+        const line = new Chart(lineEl, {
+          type: 'line',
+          data: {
+            labels: ['W1','W2','W3','W4','W5','W6','W7','W8'],
+            datasets: [{
+              label: 'Strength (kg)',
+              data: [20,28,31,35,40,46,50,56],
+              borderColor: colors.blue,
+              backgroundColor: 'transparent',
+              tension: 0.35
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: { legend: { display: true } },
+            scales: { y: { beginAtZero: true } }
+          }
+        });
+        _progressCharts.push(line);
+      }
+
+      if(pieEl){
+        const pie = new Chart(pieEl, {
+          type: 'doughnut',
+          data: {
+            labels: ['Fat Loss','Strength','Muscle Gain','Endurance'],
+            datasets: [{
+              data: [34,26,22,18],
+              backgroundColor: [colors.blue, colors.green, colors.purple, colors.orange]
+            }]
+          },
+          options: {
+            responsive: true,
+            cutout: '40%',
+            plugins: { legend: { position: 'bottom' } }
+          }
+        });
+        _progressCharts.push(pie);
+      }
+
+      // Rings
+      function ring(canvas, pct, label, color){
+        if(!canvas) return null;
+        const chart = new Chart(canvas, {
+          type: 'doughnut',
+          data: {
+            labels: ['Complete', 'Remaining'],
+            datasets: [{
+              data: [pct, Math.max(0, 100 - pct)],
+              backgroundColor: [color, colors.gray],
+              borderWidth: 0
+            }]
+          },
+          options: {
+            responsive: true,
+            cutout: '70%',
+            rotation: -90,
+            plugins: { legend: { display: false } }
+          },
+          plugins: [ringText]
+        });
+        // pass label/pct to plugin
+        chart.config.data._metaLabel = { pct, label };
+        return chart;
+      }
+
+      const r1 = ring(ringTh, 78, 'Thabo', colors.blue);
+      const r2 = ring(ringMe, 62, 'Megan', colors.teal);
+      const r3 = ring(ringCh, 88, 'Chadwin', colors.green);
+      [r1,r2,r3].forEach(ch => ch && _progressCharts.push(ch));
+
+      if(barEl){
+        const bar = new Chart(barEl, {
+          type: 'bar',
+          data: {
+            labels: ['Sipho','Bianca','Keagan'],
+            datasets: [{
+              label: 'Sessions Completed',
+              data: [18,22,15],
+              backgroundColor: [colors.purple, colors.blue, colors.orange]
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: true } }
+          }
+        });
+        _progressCharts.push(bar);
+      }
+
+      if(typeof done === 'function') done();
+    }
+    // ====================================================================================
+
+    // ------- CANVAS DRAW HELPERS (kept for Analytics section only) -------
     function drawLine(canvas, points, {label='', color='#1e3a8a'}={}){
       if(!canvas) return; const ctx=canvas.getContext('2d');
       const W=canvas.width, H=canvas.height; ctx.clearRect(0,0,W,H);
