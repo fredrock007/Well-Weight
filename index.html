@@ -65,13 +65,11 @@
       display:inline-block;padding:8px 12px;border-radius:999px;
       background:#ebfffb;border:1px solid rgba(8,145,178,.25);
       font-size:1rem;margin-right:8px;cursor:pointer;user-select:none;
-      animation:chip-nudge 6s infinite;    /* gentle shake every few seconds */
-      transform-origin:center;
+      animation:chip-nudge 6s infinite; transform-origin:center;
     }
     .chip:active{transform:scale(.98)}
     .price{font-weight:800;margin-top:10px;font-size:1.2rem}
 
-    /* Gentle “shake every few seconds” animation */
     @keyframes chip-nudge {
       0%, 92%, 100% { transform: none; }
       94% { transform: rotate(-2deg) translateY(-1px); }
@@ -119,9 +117,10 @@
       z-index:1000;animation:fadeIn .2s ease-out forwards;
     }
     .modal{
-      width:min(680px,92vw);background:#fff;color:#0b1512;border-radius:16px;
+      width:min(780px,92vw);background:#fff;color:#0b1512;border-radius:16px;
       border:1px solid #e6efe9;box-shadow:0 20px 50px rgba(0,0,0,.35);
       opacity:0;transform:translateY(8px);animation:riseIn .2s ease-out forwards;
+      max-height:85vh;overflow:auto;
     }
     .modal-header{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid #eef5f0}
     .modal-title{font-weight:800;font-size:1.25rem}
@@ -134,14 +133,18 @@
     @keyframes fadeIn{from{opacity:0}to{opacity:1}}
     @keyframes riseIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-    /* Canvas container for chart */
-    .chart-wrap{width:100%;height:240px;display:flex;align-items:center;justify-content:center}
+    /* Chart containers */
+    .chart-wrap{width:100%;display:flex;align-items:center;justify-content:center}
+    .chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    .ring-row{display:flex;gap:16px;flex-wrap:wrap}
+
     canvas{max-width:100%}
 
     @media (max-width:980px){
       .logo{width:140px;height:140px}
       .cards{grid-template-columns:1fr}
       .col-4,.col-6,.col-8{grid-column:span 1}
+      .chart-grid{grid-template-columns:1fr}
       body{font-size:18px}
     }
   </style>
@@ -149,7 +152,7 @@
 <body>
   <div class="wrap">
 
-    <!-- HERO (unchanged structure) -->
+    <!-- HERO -->
     <div class="hero">
       <div class="hero-inner">
         <svg class="logo" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-label="Siphelo’s WellWeight">
@@ -258,6 +261,32 @@
       </div>
     </section>
 
+    <!-- ANALYTICS (NEW) -->
+    <section id="analytics">
+      <div class="section-head">
+        <h2>Analytics</h2>
+        <div class="kicker">Snapshot of goals, attendance, and programme completion</div>
+      </div>
+      <div class="cards">
+        <div class="card col-6">
+          <h3>Client Goals</h3>
+          <div class="chart-wrap"><canvas id="analyticsPie" width="520" height="320"></canvas></div>
+        </div>
+        <div class="card col-6">
+          <h3>Attendance by Trainer</h3>
+          <div class="chart-wrap"><canvas id="analyticsBar" width="520" height="320"></canvas></div>
+        </div>
+        <div class="card col-8">
+          <h3>Programme Completion</h3>
+          <div class="ring-row" id="ringsRow"></div>
+        </div>
+        <div class="card col-4">
+          <h3>Clients</h3>
+          <ul id="clientList" style="line-height:1.8;margin:0;padding-left:18px"></ul>
+        </div>
+      </div>
+    </section>
+
     <!-- CONTACT -->
     <section id="contact">
       <div class="section-head">
@@ -270,7 +299,7 @@
           <label>Email<br><input class="input" name="email" type="email" required></label><br><br>
           <label>Goal<br>
             <select class="input" name="goal">
-              <option>Fat loss</option><option>Strength</option><option>Hypertrophy</option><option>General fitness</option>
+              <option>Fat loss</option><option>Strength</option><option>Hypertrophy</option><option>Endurance</option>
             </select>
           </label><br><br>
           <label>Message<br><textarea class="input" name="msg" rows="4" placeholder="Hi – I’d like help with…"></textarea></label><br>
@@ -339,37 +368,25 @@
         const b=document.createElement('div'); b.className='bubble '+(m.me?'me':''); b.textContent=m.text; b.dataset.idx=idx;
         const meta=document.createElement('div'); meta.className='meta'; meta.textContent=`${m.name} • ${new Date(m.at).toLocaleString()}`;
 
-        // quick menu (hidden by default)
         const menu=document.createElement('div'); menu.className='msg-menu'; menu.innerHTML = `<button data-act="edit">Edit ✏️</button>`;
         wrap.appendChild(menu);
 
         wrap.appendChild(b); wrap.appendChild(meta); log.appendChild(wrap);
 
-        // Long-press or right-click to show menu (only for own messages)
         if(m.me){
           let pressTimer=null;
-          const showMenu=(x,y)=>{
-            menu.style.display='flex';
-            // position near bubble top-right but keep in bounds
-            const rect=wrap.getBoundingClientRect();
-            const offsetTop = (y!==undefined ? y - rect.top - 50 : -38);
-            menu.style.top = offsetTop+'px';
-            menu.style.right = '8px';
-          };
+          const showMenu=()=>{ menu.style.display='flex'; };
           const hideMenu=()=>{ menu.style.display='none'; };
 
-          b.addEventListener('contextmenu',(e)=>{ e.preventDefault(); showMenu(e.clientX,e.clientY); });
-          b.addEventListener('mousedown',()=>{ pressTimer=setTimeout(()=>showMenu(),500); });
-          b.addEventListener('touchstart',()=>{ pressTimer=setTimeout(()=>showMenu(),500); },{passive:true});
+          b.addEventListener('contextmenu',(e)=>{ e.preventDefault(); showMenu(); });
+          b.addEventListener('mousedown',()=>{ pressTimer=setTimeout(showMenu,500); });
+          b.addEventListener('touchstart',()=>{ pressTimer=setTimeout(showMenu,500); },{passive:true});
           ['mouseup','mouseleave','touchend','touchcancel'].forEach(ev=> b.addEventListener(ev,()=>{ clearTimeout(pressTimer); }));
 
-          // Edit action
           menu.addEventListener('click',(e)=>{
             const act=(e.target.dataset.act||'').toLowerCase();
-            if(act!=='edit') return;
-            hideMenu();
+            if(act!=='edit') return; hideMenu();
 
-            // Replace bubble with input for inline edit
             const input=document.createElement('input');
             input.type='text'; input.value=m.text; input.className='input'; input.style.width='100%';
             b.replaceWith(input);
@@ -384,14 +401,12 @@
             input.addEventListener('keydown',(ev)=>{ if(ev.key==='Enter') commit(); });
           });
 
-          // Hide menu when clicking outside
           document.addEventListener('click',(e)=>{ if(!wrap.contains(e.target)) menu.style.display='none'; });
         }
       });
       log.scrollTop=log.scrollHeight;
     }
 
-    // Submit new message
     formEl.addEventListener('submit',e=>{
       e.preventDefault();
       const n=(nameI.value||'Guest').trim();
@@ -419,8 +434,19 @@
       },
       progress: {
         title: "Progress Tracking",
-        body: `<p>See consistent improvement with simple weekly tracking. Below is a mock graph of strength over 8 weeks.</p>
-               <div class="chart-wrap"><canvas id="progressChart" width="620" height="220"></canvas></div>`
+        body: `
+          <p>See consistent improvement with simple weekly tracking:</p>
+          <div class="chart-grid">
+            <div class="chart-wrap"><canvas id="progressLine" width="360" height="220"></canvas></div>
+            <div class="chart-wrap"><canvas id="progressPie" width="360" height="220"></canvas></div>
+          </div>
+          <div class="ring-row" style="margin-top:14px">
+            <canvas id="ringThabo" width="120" height="120" title="Thabo"></canvas>
+            <canvas id="ringMegan" width="120" height="120" title="Megan"></canvas>
+            <canvas id="ringChadwin" width="120" height="120" title="Chadwin"></canvas>
+          </div>
+          <div class="chart-wrap" style="margin-top:14px"><canvas id="progressBar" width="720" height="220"></canvas></div>
+        `
       },
       teamenergy: {
         title: "Team Energy",
@@ -448,44 +474,23 @@
       backdrop.classList.remove('hidden');
       backdrop.style.display = 'flex';
 
-      // If progress chart, draw it (blue line)
       if(key === 'progress'){
-        const c = document.getElementById('progressChart');
-        if(c && c.getContext){
-          const ctx = c.getContext('2d');
-          // clear
-          ctx.clearRect(0,0,c.width,c.height);
-          // axes
-          ctx.lineWidth = 1; ctx.strokeStyle = '#cfd8d3';
-          ctx.beginPath(); ctx.moveTo(40,10); ctx.lineTo(40,190); ctx.lineTo(600,190); ctx.stroke();
-
-          // mock data
-          const points = [20,28,31,35,40,46,50,56]; // upward trend
-          const stepX = (560)/(points.length-1);
-          const baseY = 180, max=60;
-
-          // grid
-          ctx.strokeStyle = '#e9f3ef'; ctx.lineWidth = 1;
-          for(let i=0;i<=4;i++){ const y=baseY - (i*(140/4)); ctx.beginPath(); ctx.moveTo(40,y); ctx.lineTo(600,y); ctx.stroke(); }
-
-          // line (blue)
-          ctx.strokeStyle = '#1e3a8a'; ctx.lineWidth = 3;
-          ctx.beginPath();
-          points.forEach((v,i)=>{
-            const x = 40 + i*stepX;
-            const y = baseY - (v/max)*140;
-            if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
-          });
-          ctx.stroke();
-
-          // dots
-          ctx.fillStyle = '#1e3a8a';
-          points.forEach((v,i)=>{
-            const x = 40 + i*stepX;
-            const y = baseY - (v/max)*140;
-            ctx.beginPath(); ctx.arc(x,y,3,0,Math.PI*2); ctx.fill();
-          });
-        }
+        // --- Draw progress charts ---
+        // helpers
+        const $ = id => document.getElementById(id);
+        drawLine($('#progressLine'), [20,28,31,35,40,46,50,56], {label:'Strength', color:'#1e3a8a'});
+        drawPie($('#progressPie'),
+          [{label:'Fat Loss',v:34,color:'#0ea5e9'},
+           {label:'Strength',v:26,color:'#22c55e'},
+           {label:'Muscle Gain',v:22,color:'#06b6d4'},
+           {label:'Endurance',v:18,color:'#a78bfa'}]);
+        drawRing($('#ringThabo'), 78, 'Thabo', '#2563eb');
+        drawRing($('#ringMegan'), 62, 'Megan', '#0ea5e9');
+        drawRing($('#ringChadwin'), 88, 'Chadwin', '#10b981');
+        drawBar($('#progressBar'),
+          ['Sipho','Bianca','Keagan'],
+          [18, 22, 15],
+          {color:'#1e3a8a'});
       }
     }
     function closeModal(){
@@ -500,6 +505,117 @@
     document.querySelectorAll('.chip[data-modal]').forEach(ch=>{
       ch.addEventListener('click', ()=> openModal(ch.dataset.modal));
     });
+
+    // --- Analytics Section Charts (on page load) ---
+    // Mock names & completion
+    const CLIENTS = [
+      {name:'Thabo', pct:78}, {name:'Zanele', pct:54}, {name:'Chadwin', pct:88},
+      {name:'Megan', pct:62}, {name:'Keagan', pct:70}, {name:'Lihle', pct:47},
+      {name:'Bianca', pct:66}, {name:'Sipho', pct:59}, {name:'Warren', pct:73},
+      {name:'Candice', pct:61}, {name:'Kyle', pct:57}, {name:'Lerato', pct:64}
+    ];
+    // render client list
+    const listEl = document.getElementById('clientList');
+    listEl.innerHTML = CLIENTS.map(c=>`<li>${c.name} — ${c.pct}% complete</li>`).join('');
+
+    // draw rings in analytics
+    const ringsRow = document.getElementById('ringsRow');
+    CLIENTS.slice(0,6).forEach(c=>{
+      const cv = document.createElement('canvas');
+      cv.width=120; cv.height=120; cv.title=c.name;
+      ringsRow.appendChild(cv);
+      drawRing(cv, c.pct, c.name, '#0ea5e9');
+    });
+
+    // Analytics charts
+    const pieA = document.getElementById('analyticsPie');
+    const barA = document.getElementById('analyticsBar');
+    drawPie(pieA,
+      [{label:'Fat Loss',v:32,color:'#0ea5e9'},
+       {label:'Strength',v:28,color:'#22c55e'},
+       {label:'Muscle Gain',v:24,color:'#06b6d4'},
+       {label:'Endurance',v:16,color:'#a78bfa'}]);
+    drawBar(barA, ['Sipho','Bianca','Keagan','Lerato'], [40, 55, 33, 28], {color:'#2563eb'});
+
+    // ------- CANVAS DRAW HELPERS -------
+    function drawLine(canvas, points, {label='', color='#1e3a8a'}={}){
+      if(!canvas) return; const ctx=canvas.getContext('2d');
+      const W=canvas.width, H=canvas.height; ctx.clearRect(0,0,W,H);
+      const left=40, bottom=H-30, top=20, right=W-20;
+      // axes
+      ctx.strokeStyle='#cfd8d3'; ctx.lineWidth=1;
+      ctx.beginPath(); ctx.moveTo(left,top); ctx.lineTo(left,bottom); ctx.lineTo(right,bottom); ctx.stroke();
+      // grid
+      ctx.strokeStyle='#e9f3ef';
+      for(let i=0;i<4;i++){ const y=bottom-(i+1)*(bottom-top)/4; ctx.beginPath(); ctx.moveTo(left,y); ctx.lineTo(right,y); ctx.stroke(); }
+      // line
+      const max=Math.max(...points)*1.1;
+      const stepX=(right-left)/(points.length-1);
+      ctx.strokeStyle=color; ctx.lineWidth=3; ctx.beginPath();
+      points.forEach((v,i)=>{ const x=left+i*stepX; const y=bottom-(v/max)*(bottom-top); if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y); });
+      ctx.stroke();
+      // dots
+      ctx.fillStyle=color;
+      points.forEach((v,i)=>{ const x=left+i*stepX; const y=bottom-(v/max)*(bottom-top); ctx.beginPath(); ctx.arc(x,y,3,0,Math.PI*2); ctx.fill(); });
+      // label
+      if(label){ ctx.fillStyle='#29443b'; ctx.font='bold 14px Inter'; ctx.fillText(label, left, top-4); }
+    }
+
+    function drawPie(canvas, slices){
+      if(!canvas) return; const ctx=canvas.getContext('2d');
+      const W=canvas.width, H=canvas.height; ctx.clearRect(0,0,W,H);
+      const cx=W/2, cy=H/2, r=Math.min(W,H)*0.32;
+      const sum=slices.reduce((a,s)=>a+s.v,0);
+      let a0=-Math.PI/2;
+      slices.forEach(s=>{
+        const ang=(s.v/sum)*Math.PI*2;
+        ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,a0,a0+ang); ctx.closePath();
+        ctx.fillStyle=s.color; ctx.fill();
+        // label
+        const mid=a0+ang/2; const lx=cx+Math.cos(mid)*(r+16), ly=cy+Math.sin(mid)*(r+16);
+        ctx.fillStyle='#29443b'; ctx.font='12px Inter'; ctx.textAlign='center';
+        ctx.fillText(s.label, lx, ly);
+        a0+=ang;
+      });
+    }
+
+    function drawRing(canvas, pct, label, color='#0ea5e9'){
+      if(!canvas) return; const ctx=canvas.getContext('2d');
+      const W=canvas.width, H=canvas.height; ctx.clearRect(0,0,W,H);
+      const cx=W/2, cy=H/2, r=Math.min(W,H)*0.38;
+      // bg circle
+      ctx.strokeStyle='#e7efeb'; ctx.lineWidth=12; ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.stroke();
+      // fg arc
+      const ang=pct/100*Math.PI*2;
+      ctx.strokeStyle=color; ctx.lineWidth=12; ctx.lineCap='round';
+      ctx.beginPath(); ctx.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+ang); ctx.stroke();
+      // text
+      ctx.fillStyle='#0b1512'; ctx.font='bold 18px Inter'; ctx.textAlign='center';
+      ctx.fillText(`${pct}%`, cx, cy+6);
+      ctx.font='12px Inter'; ctx.fillStyle='#29443b'; ctx.fillText(label, cx, cy+26);
+    }
+
+    function drawBar(canvas, labels, values, {color='#2563eb'}={}){
+      if(!canvas) return; const ctx=canvas.getContext('2d');
+      const W=canvas.width, H=canvas.height; ctx.clearRect(0,0,W,H);
+      const left=50, bottom=H-30, top=20, right=W-20;
+      // axes
+      ctx.strokeStyle='#cfd8d3'; ctx.lineWidth=1;
+      ctx.beginPath(); ctx.moveTo(left,top); ctx.lineTo(left,bottom); ctx.lineTo(right,bottom); ctx.stroke();
+      // grid
+      ctx.strokeStyle='#e9f3ef';
+      for(let i=0;i<4;i++){ const y=bottom-(i+1)*(bottom-top)/4; ctx.beginPath(); ctx.moveTo(left,y); ctx.lineTo(right,y); ctx.stroke(); }
+      // bars
+      const max=Math.max(...values)*1.2; const bw=(right-left)/values.length*0.6;
+      values.forEach((v,i)=>{
+        const x=left+(i+0.2)*((right-left)/values.length);
+        const h=(v/max)*(bottom-top);
+        ctx.fillStyle=color; ctx.fillRect(x, bottom-h, bw, h);
+        // labels
+        ctx.fillStyle='#29443b'; ctx.font='12px Inter'; ctx.textAlign='center';
+        ctx.fillText(labels[i], x+bw/2, bottom+16);
+      });
+    }
   </script>
 </body>
 </html>
