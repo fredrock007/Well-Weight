@@ -3,249 +3,247 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Siphelo’s WellWeight — Transform your body. Strengthen your life.</title>
+  <meta name="description" content="Well-Weight prototype: fitness coaching, supplements, and community. Green/teal Skool-style layout with centered hero, white cards, and working buttons." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --g1: #0ad1b8;
-      --g2: #10b981;
-      --cta: #0891b2;
-      --cta-ring: rgba(8, 145, 178, .35);
-      --text: #f9fdfc;
-      --card-bg: rgba(255, 255, 255, 0.1);
-      --border: rgba(255, 255, 255, 0.2);
-    }* { box-sizing: border-box; }
-html, body { margin: 0; height: 100%; scroll-behavior: auto; }
-body {
-  font-family: 'Inter', sans-serif;
-  background: linear-gradient(180deg, var(--g1), var(--g2));
-  color: var(--text);
-  overflow-x: hidden;
+    :root{
+      --ink:#0b1512;--muted:#4a6b60;--bg:#f7fbf9;--card:#ffffff;--line:#e6efe9;
+      --g1:#0ad1b8;--g2:#10b981; /* teal → green */
+      --cta:#0891b2;--cta-ink:#001e24;--cta-ring:rgba(8,145,178,.35);
+      --radius:18px;--shadow:0 18px 40px rgba(14,34,26,.14);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;height:100%}
+    body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+    a{color:#0f766e;text-decoration:none}
+    a:hover{text-decoration:underline}
+    .wrap{max-width:1100px;margin:0 auto;padding:24px}/* HERO */
+.hero{
+  position:relative;overflow:hidden;border-radius:24px;margin-top:6px;margin-bottom:22px;
+  background:linear-gradient(135deg,var(--g1),var(--g2));
+  color:#03221a;box-shadow:var(--shadow);
 }
+.hero-inner{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:64px 24px}
+.logo{width:140px;height:140px;filter:drop-shadow(0 12px 28px rgba(0,0,0,.15))}
+.brand{font-size:2.4rem;font-weight:800;letter-spacing:.2px;margin:14px 0 6px}
+.tagline{font-size:1.15rem;opacity:.9}
+.cta-row{display:flex;gap:12px;margin-top:18px}
+.btn{background:var(--cta);color:var(--cta-ink);padding:12px 18px;border:none;border-radius:12px;font-weight:800;cursor:pointer;box-shadow:0 10px 24px var(--cta-ring);transition:transform .1s,box-shadow .2s}
+.btn:hover{transform:translateY(-1px)}
+.btn.alt{background:transparent;color:#083344;border:1px solid rgba(8,51,68,.25)}
 
-.wrap {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 24px;
+/* SECTIONS (Skool-style white cards) */
+section{margin:26px 0}
+.section-head{display:flex;align-items:baseline;justify-content:space-between;margin:6px 4px 12px}
+h2{margin:0;font-size:1.4rem}
+.kicker{color:var(--muted);font-size:.95rem}
+
+.cards{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+.col-4{grid-column:span 4}
+.col-6{grid-column:span 6}
+.col-8{grid-column:span 8}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+.card h3{margin:0 0 8px}
+.chip{display:inline-block;padding:5px 9px;border-radius:999px;background:#ebfffb;border:1px solid rgba(8,145,178,.25);font-size:.8rem;margin-right:6px}
+.price{font-weight:800;margin-top:6px}
+
+/* Chat (prototype) */
+.chat{display:flex;flex-direction:column;height:380px}
+.log{flex:1;overflow:auto;padding:12px;border-radius:12px;background:#f4fbf8;border:1px solid var(--line)}
+.msg{margin:8px 0;max-width:82%}
+.me{margin-left:auto}
+.bubble{padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:#fff}
+.bubble.me{background:#e9fffb;border-color:rgba(8,145,178,.35)}
+.meta{font-size:.72rem;color:var(--muted);margin-top:3px}
+.chat-form{display:flex;gap:8px;margin-top:10px}
+.input, textarea{flex:1;background:#fff;color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px}
+
+footer{margin:36px 0 18px;color:var(--muted);text-align:center}
+
+@media (max-width:980px){
+  .logo{width:110px;height:110px}
+  .cards{grid-template-columns:1fr}
+  .col-4,.col-6,.col-8{grid-column:span 1}
 }
-
-/* HERO */
-.hero {
-  position: relative;
-  border-radius: 24px;
-  margin-top: 20px;
-  overflow: hidden;
-  box-shadow: 0 18px 40px rgba(14, 34, 26, .14);
-}
-
-.hero-inner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 120px 24px;
-  position: relative;
-  z-index: 2;
-}
-
-.brand {
-  font-size: 3rem;
-  font-weight: 800;
-  margin: 14px 0 6px;
-  text-shadow: 0 2px 3px rgba(0, 0, 0, 0.4);
-}
-
-.tagline { font-size: 1.4rem; opacity: .95; }
-
-.cta-row { display: flex; gap: 18px; margin-top: 26px; }
-
-.btn {
-  font-size: 1.2rem;
-  background: var(--cta);
-  color: #001e24;
-  padding: 16px 26px;
-  border: none;
-  border-radius: 12px;
-  font-weight: 800;
-  cursor: pointer;
-  box-shadow: 0 10px 24px var(--cta-ring);
-  transition: transform .1s, box-shadow .2s;
-}
-
-.btn.alt {
-  background: #d90429;
-  color: white;
-  box-shadow: 0 10px 24px rgba(217, 4, 41, .4);
-}
-
-.btn:hover { transform: translateY(-2px); }
-
-.logo {
-  width: 160px;
-  height: 160px;
-  filter: drop-shadow(0 12px 28px rgba(0, 0, 0, .25));
-  transition: transform .2s ease-in-out;
-  z-index: 2;
-  position: relative;
-}
-
-/* LIGHTNING */
-.lightning {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  z-index: 1;
-  pointer-events: none;
-}
-
-.bolt {
-  position: absolute;
-  width: 3px;
-  height: 400px;
-  background: white;
-  box-shadow: 0 0 40px 10px rgba(255, 255, 255, 0.9);
-  opacity: 0;
-  transform: rotate(25deg);
-  animation: strike 10s infinite ease-in-out;
-}
-
-.bolt:nth-child(1) { left: 20%; animation-delay: 2s; }
-.bolt:nth-child(2) { left: 55%; animation-delay: 6s; }
-.bolt:nth-child(3) { left: 80%; animation-delay: 9s; }
-
-@keyframes strike {
-  0%, 94%, 100% { opacity: 0; }
-  95% { opacity: 1; transform: translateY(0) rotate(25deg); }
-  96% { opacity: 1; transform: translateY(300px) rotate(25deg); }
-  97%, 99% { opacity: 0; }
-}
-
-.flash {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: white;
-  opacity: 0;
-  z-index: 1;
-  animation: flash 10s infinite ease-in-out;
-}
-
-@keyframes flash {
-  0%, 94%, 100% { opacity: 0; }
-  95% { opacity: 0.9; }
-  96% { opacity: 0.5; }
-  97%, 99% { opacity: 0; }
-}
-
-@keyframes shakeLogo {
-  0%, 94%, 100% { transform: none; }
-  95% { transform: rotate(3deg); }
-  96% { transform: rotate(-3deg); }
-  97% { transform: rotate(2deg); }
-  98%, 99% { transform: none; }
-}
-
-/* SECTIONS */
-section {
-  padding: 80px 20px;
-  text-align: center;
-}
-
-h2 {
-  font-size: 2.5rem;
-  font-weight: 800;
-  margin-bottom: 20px;
-}
-
-p {
-  font-size: 1.2rem;
-  max-width: 800px;
-  margin: 0 auto 20px;
-  opacity: .95;
-}
-
-.card {
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 20px;
-  margin: 30px auto;
-  max-width: 700px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-}
-
-footer { text-align: center; padding: 40px 0; opacity: .8; }
 
   </style>
 </head>
 <body>
   <div class="wrap">
+    <!-- HERO (Skool-style, centered) -->
     <div class="hero">
-      <div class="lightning">
-        <div class="bolt"></div>
-        <div class="bolt"></div>
-        <div class="bolt"></div>
-        <div class="flash"></div>
-      </div>
       <div class="hero-inner">
-        <svg class="logo" id="logo" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-          <path d="M40,70 C10,55 18,20 52,22 C56,42 53,58 40,70 Z" fill="#35d39f"/>
-          <path d="M80,70 C110,55 102,20 68,22 C64,42 67,58 80,70 Z" fill="#53e3c8"/>
-          <path d="M60,18 C76,10 92,26 84,42 C70,38 60,33 60,18 Z" fill="#9ff6ea"/>
+        <!-- Clean 3-leaf mark -->
+        <svg class="logo" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-label="Siphelo’s WellWeight">
+          <defs>
+            <linearGradient id="leafA" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#9ff6ea"/>
+              <stop offset="100%" stop-color="#53e3c8"/>
+            </linearGradient>
+            <linearGradient id="leafB" x1="1" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#5be6cd"/>
+              <stop offset="100%" stop-color="#35d39f"/>
+            </linearGradient>
+          </defs>
+          <path d="M40,70 C10,55 18,20 52,22 C56,42 53,58 40,70 Z" fill="url(#leafB)"/>
+          <path d="M80,70 C110,55 102,20 68,22 C64,42 67,58 80,70 Z" fill="url(#leafA)"/>
+          <path d="M60,18 C76,10 92,26 84,42 C70,38 60,33 60,18 Z" fill="url(#leafA)"/>
           <rect x="57" y="60" width="6" height="30" rx="3" fill="#0c7c66"/>
         </svg>
         <div class="brand">Siphelo’s WellWeight</div>
         <div class="tagline">Transform your body. Strengthen your life.</div>
-        <div class="cta-row">
+        <div class="cta-row" style="margin-top:16px">
           <button class="btn" id="ctaIntro">Book a Free Intro</button>
           <button class="btn alt" id="ctaChat">Open Client Chat</button>
         </div>
       </div>
-    </div><section id="coaching">
-  <h2>Train Like a Champion</h2>
-  <p>Personalized strength and conditioning programs built around your goals, energy, and schedule.</p>
-  <div class="card">Technique-first training, progressive overload, and goal tracking that works as hard as you do.</div>
-</section>
-
-<section id="supplements">
-  <h2>Fuel Your Recovery</h2>
-  <p>Our scientifically selected supplements support recovery, performance, and everyday vitality.</p>
-  <div class="card">Whey Protein & Creatine Monohydrate — trusted essentials to rebuild, refuel, and perform.</div>
-</section>
-
-<section id="community">
-  <h2>Join the Movement</h2>
-  <p>Connect with like-minded individuals. Share your wins, push through your challenges, and grow together.</p>
-  <div class="card">Stay tuned for the launch of our digital community hub — a space for accountability, motivation, and transformation.</div>
-</section>
-
-<section id="contact">
-  <h2>Let’s Get Started</h2>
-  <p>Ready to take control of your health? Reach out below and book your free intro session today.</p>
-  <div class="card">
-    <p>Email: info@wellweight.co.za</p>
-    <p>WhatsApp: +27 65 000 0000</p>
-    <p>Cape Town • Mon–Sat • 6:00–19:00</p>
+    </div><!-- SERVICES (white cards) -->
+<section id="services">
+  <div class="section-head">
+    <h2>Coaching Services</h2>
+    <div class="kicker">In-person & online programmes</div>
+  </div>
+  <div class="cards">
+    <div class="card col-4">
+      <h3>1:1 Personal Training</h3>
+      <p>Technique-first strength & conditioning tailored to your goals and schedule.</p>
+      <div class="chip">Gym / Home</div><div class="chip">Custom Plan</div>
+      <div class="price">From R399 / session</div>
+    </div>
+    <div class="card col-4">
+      <h3>Online Coaching</h3>
+      <p>Weekly check-ins, habit systems, and progressive programming via client portal.</p>
+      <div class="chip">Progress Tracking</div><div class="chip">Video Form Checks</div>
+      <div class="price">From R899 / month</div>
+    </div>
+    <div class="card col-4">
+      <h3>Small Group (2–6)</h3>
+      <p>Train with friends or family. Shared motivation, reduced cost, same pro guidance.</p>
+      <div class="chip">Team Energy</div><div class="chip">Budget Friendly</div>
+      <div class="price">From R249 / person</div>
+    </div>
   </div>
 </section>
 
-<footer>© <span id="year"></span> Siphelo’s WellWeight • Prototype by Fred</footer>
+<!-- SUPPLEMENTS (white cards, no SVG rectangles) -->
+<section id="supplements">
+  <div class="section-head">
+    <h2>Supplements</h2>
+    <div class="kicker">Protein & creatine for better recovery and strength</div>
+  </div>
+  <div class="cards">
+    <div class="card col-6">
+      <h3>Whey Protein (1kg)</h3>
+      <p>Smooth blend for muscle repair. Delicious vanilla & chocolate options.</p>
+      <div class="price">From R399</div>
+    </div>
+    <div class="card col-6">
+      <h3>Creatine Monohydrate (300g)</h3>
+      <p>Clinically-backed for strength & power. Pure, unflavoured, easy to mix.</p>
+      <div class="price">From R249</div>
+    </div>
+  </div>
+</section>
+
+<!-- COMMUNITY / CHAT (Prototype, local only) -->
+<section id="community">
+  <div class="section-head">
+    <h2>Client Community</h2>
+    <div class="kicker">Prototype chat — stored in your browser for the demo</div>
+  </div>
+  <div class="cards">
+    <div class="card col-8">
+      <div class="chat">
+        <div id="log" class="log" aria-live="polite"></div>
+        <form id="chatForm" class="chat-form" autocomplete="off">
+          <input id="name" class="input" placeholder="Your name" required />
+          <input id="text" class="input" placeholder="Write a message…" required />
+          <button class="btn" type="submit">Send</button>
+        </form>
+      </div>
+      <p class="kicker" style="margin-top:10px">For production we’ll swap in real-time chat (Supabase / Firebase) for synced messages.</p>
+    </div>
+    <div class="card col-4">
+      <h3>Member Perks</h3>
+      <ul>
+        <li>Weekly Q&A with Siphelo</li>
+        <li>Form checks (video)</li>
+        <li>Habit & streak tracking</li>
+        <li>Progress templates (PDF)</li>
+      </ul>
+      <button class="btn" style="width:100%;margin-top:12px" onclick="alert('Client portal coming soon')">Enter Client Portal</button>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-head">
+    <h2>Contact</h2>
+    <div class="kicker">Book your free intro session</div>
+  </div>
+  <div class="cards">
+    <form class="card col-6" onsubmit="event.preventDefault(); demoSubmit(this)">
+      <label>Name<br><input class="input" name="name" required></label><br><br>
+      <label>Email<br><input class="input" name="email" type="email" required></label><br><br>
+      <label>Goal<br>
+        <select class="input" name="goal">
+          <option>Fat loss</option>
+          <option>Strength</option>
+          <option>Hypertrophy</option>
+          <option>General fitness</option>
+        </select>
+      </label><br><br>
+      <label>Message<br><textarea class="input" name="msg" rows="4" placeholder="Hi – I’d like help with…"></textarea></label><br>
+      <button class="btn" type="submit">Request Consult</button>
+      <span id="toast" class="kicker" style="margin-left:10px"></span>
+    </form>
+    <div class="card col-6">
+      <h3>Location & Hours</h3>
+      <p>Cape Town • Mon–Sat • 6:00–19:00</p>
+      <h3>Socials</h3>
+      <p><a href="#">Instagram</a> • <a href="#">YouTube</a> • <a href="#">WhatsApp</a></p>
+      <h3>Brand Kit</h3>
+      <p>Primary gradient: teal → green<br>Neutral: white, off‑white, ink</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  © <span id="year"></span> Siphelo’s WellWeight • Prototype by Fred
+</footer>
 
   </div>  <script>
-    const logo = document.getElementById('logo');
-    const bolts = document.querySelectorAll('.bolt');
+    // Smooth section scroll via hero buttons
+    const introBtn = document.getElementById('ctaIntro');
+    const chatBtn  = document.getElementById('ctaChat');
+    introBtn.addEventListener('click', ()=> document.getElementById('contact').scrollIntoView({behavior:'smooth'}));
+    chatBtn.addEventListener('click',  ()=> document.getElementById('community').scrollIntoView({behavior:'smooth'}));
 
-    bolts.forEach(b => {
-      b.addEventListener('animationiteration', () => {
-        logo.style.animation = 'shakeLogo 0.6s';
-        setTimeout(() => logo.style.animation = '', 600);
-      });
-    });
+    // Contact form demo
+    function demoSubmit(form){
+      const name = form.name.value.trim();
+      const toast = document.getElementById('toast');
+      toast.textContent = `Thanks, ${name}. We’ll email you a schedule within 24h.`;
+      form.reset();
+      setTimeout(()=> toast.textContent = '', 4200);
+    }
+
+    // Lightweight local chat
+    const KEY='wellweight_chat_v2';
+    const log = document.getElementById('log');
+    const form = document.getElementById('chatForm');
+    const nameI = document.getElementById('name');
+    const textI = document.getElementById('text');
+
+    const load=()=>{try{return JSON.parse(localStorage.getItem(KEY))||[]}catch{return []}};
+    const save=(L)=>localStorage.setItem(KEY,JSON.stringify(L));
+    const render=()=>{const L=load(); log.innerHTML=''; L.forEach(m=>{const w=document.createElement('div'); w.className='msg '+(m.me?'me':''); const b=document.createElement('div'); b.className='bubble '+(m.me?'me':''); b.textContent=m.text; const meta=document.createElement('div'); meta.className='meta'; meta.textContent=`${m.name} • ${new Date(m.at).toLocaleString()}`; w.appendChild(b); w.appendChild(meta); log.appendChild(w);}); log.scrollTop=log.scrollHeight;};
+    form.addEventListener('submit',e=>{e.preventDefault(); const n=(nameI.value||'Guest').trim(); const t=(textI.value||'').trim(); if(!t) return; const you=/fred|siphelo/i.test(n); const L=load(); L.push({name:n,text:t,at:Date.now(),me:you}); save(L); textI.value=''; render();});
+    render();
 
     document.getElementById('year').textContent = new Date().getFullYear();
   </script></body>
