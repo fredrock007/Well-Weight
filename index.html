@@ -3,60 +3,79 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Siphelo’s WellWeight — Transform your body. Strengthen your life.</title>
-  <meta name="description" content="Well-Weight prototype with green/teal Skool-style hero, lightning effect, shaking logo animation, larger text and buttons." />
+  <meta name="description" content="Well-Weight hero section with realistic lightning strikes and shaking leaf logo." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
   <style>
     :root{
-      --ink:#0b1512;--muted:#4a6b60;--bg:#f7fbf9;--card:#ffffff;--line:#e6efe9;
-      --g1:#0ad1b8;--g2:#10b981;
-      --cta:#0891b2;--cta-ink:#001e24;--cta-ring:rgba(8,145,178,.35);
-      --radius:18px;--shadow:0 18px 40px rgba(14,34,26,.14);
+      --g1:#0ad1b8;--g2:#10b981;--cta:#0891b2;--cta-ring:rgba(8,145,178,.35);
     }
     *{box-sizing:border-box}
     html,body{margin:0;height:100%}
-    body{font-family:Inter,sans-serif;background:var(--bg);color:var(--ink)}
-    a{color:#0f766e;text-decoration:none}
-    a:hover{text-decoration:underline}
+    body{font-family:Inter,sans-serif;background:#f7fbf9;color:#0b1512;overflow-x:hidden}
     .wrap{max-width:1100px;margin:0 auto;padding:24px}/* HERO */
 .hero{
-  position:relative;overflow:hidden;border-radius:24px;margin-top:6px;margin-bottom:22px;
+  position:relative;
+  border-radius:24px;
+  margin-top:20px;
   background:linear-gradient(135deg,var(--g1),var(--g2));
-  color:#03221a;box-shadow:var(--shadow);
-  animation: lightning 8s infinite;
+  color:#03221a;
+  box-shadow:0 18px 40px rgba(14,34,26,.14);
+  overflow:hidden;
 }
-@keyframes lightning {
-  0%, 95%, 100% {filter: brightness(1);}
-  96%, 97% {filter: brightness(3);}
-  98%, 99% {filter: brightness(0.6);}
-}
-.hero-inner{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 24px}
-.logo{width:160px;height:160px;filter:drop-shadow(0 12px 28px rgba(0,0,0,.15));animation: shake 8s infinite}
-@keyframes shake {
-  0%,95%,100% {transform: none;}
-  96%,97% {transform: rotate(2deg);}
-  98%,99% {transform: rotate(-2deg);}
-}
-.brand{font-size:3rem;font-weight:800;letter-spacing:.2px;margin:14px 0 6px}
+.hero-inner{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:90px 24px;position:relative;z-index:2}
+.brand{font-size:3rem;font-weight:800;margin:14px 0 6px;text-shadow:0 2px 3px rgba(0,0,0,0.2)}
 .tagline{font-size:1.4rem;opacity:.9}
-.cta-row{display:flex;gap:16px;margin-top:24px}
-.btn{font-size:1.1rem;background:var(--cta);color:var(--cta-ink);padding:16px 24px;border:none;border-radius:12px;font-weight:800;cursor:pointer;box-shadow:0 10px 24px var(--cta-ring);transition:transform .1s,box-shadow .2s}
-.btn:hover{transform:translateY(-1px)}
-.btn.alt{background:#d90429;color:white;border:none;box-shadow:0 10px 24px rgba(217,4,41,.4)}
 
-section{margin:26px 0}
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
-footer{margin:36px 0 18px;color:var(--muted);text-align:center}
+/* BUTTONS */
+.cta-row{display:flex;gap:18px;margin-top:26px}
+.btn{font-size:1.2rem;background:var(--cta);color:#001e24;padding:16px 26px;border:none;border-radius:12px;font-weight:800;cursor:pointer;box-shadow:0 10px 24px var(--cta-ring);transition:transform .1s,box-shadow .2s}
+.btn:hover{transform:translateY(-2px)}
+.btn.alt{background:#d90429;color:white;box-shadow:0 10px 24px rgba(217,4,41,.4)}
+
+/* LOGO */
+.logo{width:160px;height:160px;filter:drop-shadow(0 12px 28px rgba(0,0,0,.15));transition:transform .2s ease-in-out;z-index:2;position:relative}
+
+/* LIGHTNING */
+.lightning{
+  position:absolute;top:0;left:0;width:100%;height:100%;overflow:hidden;z-index:1;pointer-events:none;
+}
+.bolt{
+  position:absolute;width:2px;height:150px;background:white;box-shadow:0 0 20px 5px rgba(255,255,255,0.8);opacity:0;transform:rotate(15deg);
+  animation:flash 6s infinite;
+}
+.bolt:nth-child(1){left:20%;animation-delay:1s;}
+.bolt:nth-child(2){left:60%;animation-delay:3s;}
+.bolt:nth-child(3){left:80%;animation-delay:5s;}
+
+@keyframes flash {
+  0%, 94%, 100% {opacity:0;}
+  95% {opacity:1; height:160px;}
+  96% {opacity:1; height:120px;}
+  97%, 99% {opacity:0;}
+}
+
+@keyframes shakeLogo {
+  0%,94%,100% {transform:none;}
+  95% {transform:rotate(2deg);}
+  96% {transform:rotate(-2deg);}
+  97% {transform:rotate(1deg);}
+  98%,99% {transform:none;}
+}
 
   </style>
 </head>
 <body>
   <div class="wrap">
-    <!-- HERO -->
     <div class="hero">
+      <div class="lightning">
+        <div class="bolt"></div>
+        <div class="bolt"></div>
+        <div class="bolt"></div>
+      </div>
       <div class="hero-inner">
-        <svg class="logo" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+        <svg class="logo" id="logo" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
           <path d="M40,70 C10,55 18,20 52,22 C56,42 53,58 40,70 Z" fill="#35d39f"/>
           <path d="M80,70 C110,55 102,20 68,22 C64,42 67,58 80,70 Z" fill="#53e3c8"/>
           <path d="M60,18 C76,10 92,26 84,42 C70,38 60,33 60,18 Z" fill="#9ff6ea"/>
@@ -71,9 +90,14 @@ footer{margin:36px 0 18px;color:var(--muted);text-align:center}
       </div>
     </div>
   </div>  <script>
-    const introBtn=document.getElementById('ctaIntro');
-    const chatBtn=document.getElementById('ctaChat');
-    introBtn.addEventListener('click',()=>alert('Scroll to contact section (coming soon)'));
-    chatBtn.addEventListener('click',()=>alert('Scroll to community section (coming soon)'));
+    const logo=document.getElementById('logo');
+    const bolts=document.querySelectorAll('.bolt');
+
+    bolts.forEach(b=>{
+      b.addEventListener('animationiteration',()=>{
+        logo.style.animation='shakeLogo 0.5s';
+        setTimeout(()=>logo.style.animation='',500);
+      });
+    });
   </script></body>
 </html>
