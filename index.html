@@ -10,12 +10,15 @@
       --g2: #10b981;
       --cta: #0891b2;
       --cta-ring: rgba(8, 145, 178, .35);
+      --text: #f9fdfc;
+      --card-bg: rgba(255, 255, 255, 0.1);
+      --border: rgba(255, 255, 255, 0.2);
     }* { box-sizing: border-box; }
-html, body { margin: 0; height: 100%; }
+html, body { margin: 0; height: 100%; scroll-behavior: auto; }
 body {
   font-family: 'Inter', sans-serif;
-  background: #f7fbf9;
-  color: #0b1512;
+  background: linear-gradient(180deg, var(--g1), var(--g2));
+  color: var(--text);
   overflow-x: hidden;
 }
 
@@ -30,10 +33,8 @@ body {
   position: relative;
   border-radius: 24px;
   margin-top: 20px;
-  background: linear-gradient(135deg, var(--g1), var(--g2));
-  color: #03221a;
-  box-shadow: 0 18px 40px rgba(14, 34, 26, .14);
   overflow: hidden;
+  box-shadow: 0 18px 40px rgba(14, 34, 26, .14);
 }
 
 .hero-inner {
@@ -42,7 +43,7 @@ body {
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 90px 24px;
+  padding: 120px 24px;
   position: relative;
   z-index: 2;
 }
@@ -51,17 +52,12 @@ body {
   font-size: 3rem;
   font-weight: 800;
   margin: 14px 0 6px;
-  text-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+  text-shadow: 0 2px 3px rgba(0, 0, 0, 0.4);
 }
 
-.tagline { font-size: 1.4rem; opacity: .9; }
+.tagline { font-size: 1.4rem; opacity: .95; }
 
-/* BUTTONS */
-.cta-row {
-  display: flex;
-  gap: 18px;
-  margin-top: 26px;
-}
+.cta-row { display: flex; gap: 18px; margin-top: 26px; }
 
 .btn {
   font-size: 1.2rem;
@@ -76,19 +72,18 @@ body {
   transition: transform .1s, box-shadow .2s;
 }
 
-.btn:hover { transform: translateY(-2px); }
-
 .btn.alt {
   background: #d90429;
   color: white;
   box-shadow: 0 10px 24px rgba(217, 4, 41, .4);
 }
 
-/* LOGO */
+.btn:hover { transform: translateY(-2px); }
+
 .logo {
   width: 160px;
   height: 160px;
-  filter: drop-shadow(0 12px 28px rgba(0, 0, 0, .15));
+  filter: drop-shadow(0 12px 28px rgba(0, 0, 0, .25));
   transition: transform .2s ease-in-out;
   z-index: 2;
   position: relative;
@@ -109,22 +104,22 @@ body {
 .bolt {
   position: absolute;
   width: 3px;
-  height: 300px;
+  height: 400px;
   background: white;
-  box-shadow: 0 0 40px 10px rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 40px 10px rgba(255, 255, 255, 0.9);
   opacity: 0;
   transform: rotate(25deg);
   animation: strike 10s infinite ease-in-out;
 }
 
-.bolt:nth-child(1) { left: 15%; animation-delay: 2s; }
+.bolt:nth-child(1) { left: 20%; animation-delay: 2s; }
 .bolt:nth-child(2) { left: 55%; animation-delay: 6s; }
 .bolt:nth-child(3) { left: 80%; animation-delay: 9s; }
 
 @keyframes strike {
   0%, 94%, 100% { opacity: 0; }
   95% { opacity: 1; transform: translateY(0) rotate(25deg); }
-  96% { opacity: 1; transform: translateY(200px) rotate(25deg); }
+  96% { opacity: 1; transform: translateY(300px) rotate(25deg); }
   97%, 99% { opacity: 0; }
 }
 
@@ -142,8 +137,8 @@ body {
 
 @keyframes flash {
   0%, 94%, 100% { opacity: 0; }
-  95% { opacity: 0.8; }
-  96% { opacity: 0.4; }
+  95% { opacity: 0.9; }
+  96% { opacity: 0.5; }
   97%, 99% { opacity: 0; }
 }
 
@@ -151,9 +146,40 @@ body {
   0%, 94%, 100% { transform: none; }
   95% { transform: rotate(3deg); }
   96% { transform: rotate(-3deg); }
-  97% { transform: rotate(1deg); }
+  97% { transform: rotate(2deg); }
   98%, 99% { transform: none; }
 }
+
+/* SECTIONS */
+section {
+  padding: 80px 20px;
+  text-align: center;
+}
+
+h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 20px;
+}
+
+p {
+  font-size: 1.2rem;
+  max-width: 800px;
+  margin: 0 auto 20px;
+  opacity: .95;
+}
+
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  margin: 30px auto;
+  max-width: 700px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+footer { text-align: center; padding: 40px 0; opacity: .8; }
 
   </style>
 </head>
@@ -180,7 +206,36 @@ body {
           <button class="btn alt" id="ctaChat">Open Client Chat</button>
         </div>
       </div>
-    </div>
+    </div><section id="coaching">
+  <h2>Train Like a Champion</h2>
+  <p>Personalized strength and conditioning programs built around your goals, energy, and schedule.</p>
+  <div class="card">Technique-first training, progressive overload, and goal tracking that works as hard as you do.</div>
+</section>
+
+<section id="supplements">
+  <h2>Fuel Your Recovery</h2>
+  <p>Our scientifically selected supplements support recovery, performance, and everyday vitality.</p>
+  <div class="card">Whey Protein & Creatine Monohydrate — trusted essentials to rebuild, refuel, and perform.</div>
+</section>
+
+<section id="community">
+  <h2>Join the Movement</h2>
+  <p>Connect with like-minded individuals. Share your wins, push through your challenges, and grow together.</p>
+  <div class="card">Stay tuned for the launch of our digital community hub — a space for accountability, motivation, and transformation.</div>
+</section>
+
+<section id="contact">
+  <h2>Let’s Get Started</h2>
+  <p>Ready to take control of your health? Reach out below and book your free intro session today.</p>
+  <div class="card">
+    <p>Email: info@wellweight.co.za</p>
+    <p>WhatsApp: +27 65 000 0000</p>
+    <p>Cape Town • Mon–Sat • 6:00–19:00</p>
+  </div>
+</section>
+
+<footer>© <span id="year"></span> Siphelo’s WellWeight • Prototype by Fred</footer>
+
   </div>  <script>
     const logo = document.getElementById('logo');
     const bolts = document.querySelectorAll('.bolt');
@@ -191,5 +246,7 @@ body {
         setTimeout(() => logo.style.animation = '', 600);
       });
     });
+
+    document.getElementById('year').textContent = new Date().getFullYear();
   </script></body>
 </html>
