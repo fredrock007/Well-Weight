@@ -12,6 +12,7 @@
       --cta:#0891b2;--cta-ink:#001e24;--cta-ring:rgba(8,145,178,.35);
       --radius:18px;--shadow:0 18px 40px rgba(14,34,26,.14);
       --overlay: rgba(6, 12, 10, 0.55);
+      --menu:#101a16; --menu-ink:#e6f3ec;
     }
     *{box-sizing:border-box}
     html,body{margin:0;height:100%}
@@ -64,17 +65,27 @@
       display:inline-block;padding:8px 12px;border-radius:999px;
       background:#ebfffb;border:1px solid rgba(8,145,178,.25);
       font-size:1rem;margin-right:8px;cursor:pointer;user-select:none;
+      animation:chip-nudge 6s infinite;    /* gentle shake every few seconds */
+      transform-origin:center;
     }
     .chip:active{transform:scale(.98)}
     .price{font-weight:800;margin-top:10px;font-size:1.2rem}
 
+    /* Gentle “shake every few seconds” animation */
+    @keyframes chip-nudge {
+      0%, 92%, 100% { transform: none; }
+      94% { transform: rotate(-2deg) translateY(-1px); }
+      96% { transform: rotate(2deg) translateY(1px); }
+      98% { transform: none; }
+    }
+
     /* Chat */
     .chat{display:flex;flex-direction:column;height:400px}
     .log{flex:1;overflow:auto;padding:16px;border-radius:12px;background:#f4fbf8;border:1px solid var(--line)}
-    .msg{margin:10px 0;max-width:82%}
+    .msg{margin:10px 0;max-width:82%;position:relative}
     .me{margin-left:auto}
     .bubble{padding:14px 16px;border-radius:12px;border:1px solid var(--line);background:#fff;cursor:default}
-    .bubble.me{background:#e9fffb;border-color:rgba(8,145,178,.35);cursor:text}
+    .bubble.me{background:#e9fffb;border-color:rgba(8,145,178,.35);cursor:default}
     .meta{font-size:.9rem;color:var(--muted);margin-top:4px}
     .chat-form{display:flex;gap:10px;margin-top:12px}
     .input, textarea{
@@ -82,6 +93,22 @@
       border:1px solid var(--line);border-radius:10px;
       padding:14px;font-size:1.1rem;
     }
+
+    /* WhatsApp-like quick menu */
+    .msg-menu{
+      position:absolute;top:-38px;right:8px;
+      background:var(--menu);color:var(--menu-ink);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:10px;padding:6px 10px;font-size:.95rem;
+      display:none;gap:10px;align-items:center;white-space:nowrap;
+      box-shadow:0 10px 25px rgba(0,0,0,.25);
+      animation:fadeIn .15s ease-out forwards;
+    }
+    .msg-menu button{
+      background:transparent;border:none;color:var(--menu-ink);
+      font-weight:700;cursor:pointer;padding:0 4px
+    }
+    .msg-menu button:hover{text-decoration:underline}
 
     footer{margin:40px 0 20px;color:var(--muted);text-align:center;font-size:1.1rem}
 
@@ -122,7 +149,7 @@
 <body>
   <div class="wrap">
 
-    <!-- HERO -->
+    <!-- HERO (unchanged structure) -->
     <div class="hero">
       <div class="hero-inner">
         <svg class="logo" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-label="Siphelo’s WellWeight">
@@ -295,7 +322,7 @@
       setTimeout(()=>toast.textContent='',4200);
     }
 
-    // --- Local chat with editable own messages ---
+    // --- Local chat with WhatsApp-like long-press Edit for own messages ---
     const KEY='wellweight_chat_v2';
     const log=document.getElementById('log');
     const formEl=document.getElementById('chatForm');
@@ -311,7 +338,55 @@
         const wrap=document.createElement('div'); wrap.className='msg '+(m.me?'me':'');
         const b=document.createElement('div'); b.className='bubble '+(m.me?'me':''); b.textContent=m.text; b.dataset.idx=idx;
         const meta=document.createElement('div'); meta.className='meta'; meta.textContent=`${m.name} • ${new Date(m.at).toLocaleString()}`;
+
+        // quick menu (hidden by default)
+        const menu=document.createElement('div'); menu.className='msg-menu'; menu.innerHTML = `<button data-act="edit">Edit ✏️</button>`;
+        wrap.appendChild(menu);
+
         wrap.appendChild(b); wrap.appendChild(meta); log.appendChild(wrap);
+
+        // Long-press or right-click to show menu (only for own messages)
+        if(m.me){
+          let pressTimer=null;
+          const showMenu=(x,y)=>{
+            menu.style.display='flex';
+            // position near bubble top-right but keep in bounds
+            const rect=wrap.getBoundingClientRect();
+            const offsetTop = (y!==undefined ? y - rect.top - 50 : -38);
+            menu.style.top = offsetTop+'px';
+            menu.style.right = '8px';
+          };
+          const hideMenu=()=>{ menu.style.display='none'; };
+
+          b.addEventListener('contextmenu',(e)=>{ e.preventDefault(); showMenu(e.clientX,e.clientY); });
+          b.addEventListener('mousedown',()=>{ pressTimer=setTimeout(()=>showMenu(),500); });
+          b.addEventListener('touchstart',()=>{ pressTimer=setTimeout(()=>showMenu(),500); },{passive:true});
+          ['mouseup','mouseleave','touchend','touchcancel'].forEach(ev=> b.addEventListener(ev,()=>{ clearTimeout(pressTimer); }));
+
+          // Edit action
+          menu.addEventListener('click',(e)=>{
+            const act=(e.target.dataset.act||'').toLowerCase();
+            if(act!=='edit') return;
+            hideMenu();
+
+            // Replace bubble with input for inline edit
+            const input=document.createElement('input');
+            input.type='text'; input.value=m.text; input.className='input'; input.style.width='100%';
+            b.replaceWith(input);
+            input.focus(); input.selectionStart=input.selectionEnd=input.value.length;
+
+            const commit=()=>{
+              const txt=input.value.trim();
+              if(txt){ m.text=txt; const L2=load(); L2[idx]=m; save(L2); }
+              render();
+            };
+            input.addEventListener('blur',commit);
+            input.addEventListener('keydown',(ev)=>{ if(ev.key==='Enter') commit(); });
+          });
+
+          // Hide menu when clicking outside
+          document.addEventListener('click',(e)=>{ if(!wrap.contains(e.target)) menu.style.display='none'; });
+        }
       });
       log.scrollTop=log.scrollHeight;
     }
@@ -327,32 +402,6 @@
       L.push({name:n,text:t,at:Date.now(),me:you});
       save(L);
       textI.value=''; render();
-    });
-
-    // Click-to-edit for "me" messages
-    log.addEventListener('click',e=>{
-      const target=e.target;
-      if(!target.classList.contains('bubble')) return;
-      const idx=+target.dataset.idx;
-      const L=load();
-      const msg=L[idx]; if(!msg || !msg.me) return; // only your own messages editable
-
-      // Replace bubble with input
-      const input=document.createElement('input');
-      input.type='text';
-      input.value=msg.text;
-      input.className='input';
-      input.style.width='100%';
-      target.replaceWith(input);
-      input.focus();
-      input.selectionStart=input.selectionEnd=input.value.length;
-
-      const commit=()=>{
-        msg.text=input.value.trim()||msg.text;
-        L[idx]=msg; save(L); render();
-      };
-      input.addEventListener('blur',commit);
-      input.addEventListener('keydown',ev=>{ if(ev.key==='Enter') { commit(); } });
     });
 
     render();
