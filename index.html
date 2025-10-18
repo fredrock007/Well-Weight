@@ -1,97 +1,202 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Siphelo’s WellWeight — Transform your body. Strengthen your life.</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-<!-- Chart.js (CDN) -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<style>
-  :root{
-    --ink:#0b1512;--muted:#4a6b60;--bg:#f7fbf9;--card:#ffffff;--line:#e6efe9;
-    --g1:#0ad1b8;--g2:#10b981; --cta:#0891b2; --cta-ink:#001e24; --cta-ring:rgba(8,145,178,.35);
-    --radius:18px; --shadow:0 18px 40px rgba(14,34,26,.14);
-    --overlay: rgba(6, 12, 10, 0.55);
-  }
-  *{box-sizing:border-box}
-  html,body{margin:0;height:100%}
-  body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:18px}
-  a{color:#0f766e;text-decoration:none} a:hover{text-decoration:underline}
-  .wrap{max-width:1100px;margin:0 auto;padding:22px}
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Siphelo’s WellWeight — Transform your body. Strengthen your life.</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --ink:#0b1512;--muted:#4a6b60;--bg:#f7fbf9;--card:#ffffff;--line:#e6efe9;
+      --g1:#0ad1b8;--g2:#10b981;
+      --cta:#0891b2;--cta-ink:#001e24;--cta-ring:rgba(8,145,178,.35);
+      --radius:18px;--shadow:0 18px 40px rgba(14,34,26,.14);
+      --overlay: rgba(6, 12, 10, 0.55);
+      --menu:#101a16; --menu-ink:#e6f3ec;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;height:100%}
+    body{
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Helvetica,Arial,sans-serif;
+      background:var(--bg);color:var(--ink);font-size:20px;
+    }
+    a{color:#0f766e;text-decoration:none}
+    a:hover{text-decoration:underline}
+    .wrap{max-width:1100px;margin:0 auto;padding:24px}
 
-  /* HERO */
-  .hero{position:relative;overflow:hidden;border-radius:24px;margin-top:6px;margin-bottom:18px;background:linear-gradient(135deg,var(--g1),var(--g2));color:#03221a;box-shadow:var(--shadow)}
-  .hero-inner{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:76px 18px}
-  .brand{font-size:2.8rem;font-weight:800;margin:10px 0 6px}
-  .tagline{font-size:1.35rem;opacity:.95}
-  .cta-row{display:flex;gap:14px;margin-top:18px;flex-wrap:wrap;justify-content:center}
-  .btn{background:var(--cta);color:var(--cta-ink);padding:14px 22px;border:none;border-radius:14px;font-weight:800;font-size:1.05rem;cursor:pointer;box-shadow:0 10px 24px var(--cta-ring);transition:transform .1s}
-  .btn:hover{transform:translateY(-1px)}
-  .btn.alt{background:#e31b0c;color:#fff}
-  /* Lightning overlay */
-  .hero::after{
-    content:"";position:absolute;inset:0;pointer-events:none;
-    background:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120"><g stroke="white" stroke-opacity=".18" stroke-width="2"><line x1="60" y1="0" x2="58" y2="20"/><line x1="58" y1="20" x2="56" y2="40"/></g></svg>') repeat;
-    opacity:0;animation:lightning 7s linear infinite;
-  }
-  @keyframes lightning{0%{opacity:0;transform:translate3d(0,0,0)}35%{opacity:.18}55%{opacity:.26}75%{opacity:.12}100%{opacity:0;transform:translate3d(360px,240px,0)}}
+    /* HERO */
+    .hero{
+      position:relative;overflow:hidden;border-radius:24px;margin-top:6px;margin-bottom:22px;
+      background:linear-gradient(135deg,var(--g1),var(--g2));
+      color:#03221a;box-shadow:var(--shadow);
+    }
+    .hero-inner{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 24px}
+    .logo{width:180px;height:180px;filter:drop-shadow(0 12px 28px rgba(0,0,0,.15))}
+    .brand{font-size:3rem;font-weight:800;margin:20px 0 8px}
+    .tagline{font-size:1.6rem;opacity:.9}
+    .cta-row{display:flex;gap:20px;margin-top:24px}
+    .btn{
+      background:var(--cta);color:var(--cta-ink);
+      padding:16px 26px;border:none;border-radius:14px;
+      font-weight:800;font-size:1.2rem;
+      cursor:pointer;box-shadow:0 10px 24px var(--cta-ring);
+      transition:transform .1s,box-shadow .2s
+    }
+    .btn:hover{transform:translateY(-2px)}
+    .btn.alt{background:#e31b0c;color:white;border:none}
 
-  /* Counter */
-  .counter-strip{display:flex;align-items:center;justify-content:center;gap:10px;padding:12px 14px;margin:8px auto 24px;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);max-width:700px}
-  .counter-num{font-weight:800;font-size:1.3rem;background:linear-gradient(135deg,var(--g1),var(--g2));-webkit-background-clip:text;background-clip:text;color:transparent}
-  .counter-label{font-size:1.05rem;color:#244038}
+    /* COUNTER */
+    .counter-strip{
+      display:flex;align-items:center;justify-content:center;
+      gap:10px;padding:14px 16px;margin:-6px auto 26px;
+      background:#ffffff;border:1px solid var(--line);
+      border-radius:14px;box-shadow:var(--shadow);max-width:700px;
+      color:#0b1512;
+    }
+    .counter-num{font-weight:800;font-size:1.4rem;background:linear-gradient(135deg,var(--g1),var(--g2));
+      -webkit-background-clip:text;background-clip:text;color:transparent}
+    .counter-label{font-size:1.05rem;color:#244038}
 
-  /* Sections & cards */
-  section{margin:30px 0}
-  .section-head{text-align:center;margin-bottom:18px}
-  h2{margin:0;font-size:1.8rem;font-weight:800}
-  .kicker{color:var(--muted);font-size:1rem}
-  .cards{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
-  .col-4{grid-column:span 4} .col-6{grid-column:span 6} .col-8{grid-column:span 8}
-  .card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
-  .card h3{margin:0 0 8px}
-  .price{font-weight:800;margin-top:8px}
-  .chip{display:inline-block;padding:8px 12px;border-radius:999px;background:#ebfffb;border:1px solid rgba(8,145,178,.25);font-weight:700;cursor:pointer;margin:4px 6px 0 0;animation:chip-nudge 6s infinite;transform-origin:center}
-  @keyframes chip-nudge{0%,92%,100%{transform:none}94%{transform:rotate(-2deg) translateY(-1px)}96%{transform:rotate(2deg) translateY(1px)}98%{transform:none}}
+    /* SECTIONS */
+    section{margin:40px 0}
+    .section-head{text-align:center;margin-bottom:24px}
+    h2{margin:0;font-size:2rem;font-weight:800}
+    .kicker{color:var(--muted);font-size:1.1rem}
 
-  /* Chat */
-  .chat{display:flex;flex-direction:column;height:380px}
-  .log{flex:1;overflow:auto;padding:12px;border-radius:12px;background:#f4fbf8;border:1px solid var(--line)}
-  .msg{margin:8px 0;max-width:82%}
-  .me{margin-left:auto}
-  .bubble{padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:#fff}
-  .bubble.me{background:#e9fffb;border-color:rgba(8,145,178,.35)}
-  .chat-form{display:flex;gap:8px;margin-top:10px}
-  .input, textarea{flex:1;background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px}
-  .meta{font-size:.8rem;color:var(--muted);margin-top:3px}
+    .cards{display:grid;grid-template-columns:repeat(12,1fr);gap:20px}
+    .col-4{grid-column:span 4}
+    .col-6{grid-column:span 6}
+    .col-8{grid-column:span 8}
+    .card{
+      background:var(--card);border:1px solid var(--line);
+      border-radius:var(--radius);padding:28px;box-shadow:var(--shadow);
+      font-size:1.1rem;
+    }
+    .card h3{margin:0 0 10px;font-size:1.5rem}
+    .chip{
+      display:inline-block;padding:8px 12px;border-radius:999px;
+      background:#ebfffb;border:1px solid rgba(8,145,178,.25);
+      font-size:1rem;margin-right:8px;cursor:pointer;user-select:none;
+      animation:chip-nudge 6s infinite; transform-origin:center;
+    }
+    .chip:active{transform:scale(.98)}
+    .price{font-weight:800;margin-top:10px;font-size:1.2rem}
 
-  /* Modal */
-  .modal-backdrop{position:fixed;inset:0;background:var(--overlay);display:none;align-items:center;justify-content:center;z-index:1000}
-  .modal{width:min(820px,94vw);background:#fff;color:#0b1512;border-radius:16px;border:1px solid #e6efe9;box-shadow:0 20px 50px rgba(0,0,0,.35);max-height:86vh;overflow:auto}
-  .modal-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid #eef5f0}
-  .modal-title{font-weight:800}
-  .modal-close{background:transparent;border:none;font-size:1.6rem;line-height:1;cursor:pointer}
-  .modal-body{padding:16px}
-  .loading-pulse{font-weight:800;text-align:center;margin:10px 0;background:linear-gradient(135deg,var(--g1),var(--g2));-webkit-background-clip:text;background-clip:text;color:transparent;animation:pulse 2.5s ease-in-out infinite}
-  @keyframes pulse{0%{opacity:.55}50%{opacity:1}100%{opacity:.55}}
-  .fade-out{animation:fadeOut .35s ease-out forwards}
-  @keyframes fadeOut{to{opacity:0;visibility:hidden}}
+    @keyframes chip-nudge {
+      0%, 92%, 100% { transform: none; }
+      94% { transform: rotate(-2deg) translateY(-1px); }
+      96% { transform: rotate(2deg) translateY(1px); }
+      98% { transform: none; }
+    }
 
-  footer{margin:34px 0 16px;color:var(--muted);text-align:center}
+    /* Chat */
+    .chat{display:flex;flex-direction:column;height:400px}
+    .log{flex:1;overflow:auto;padding:16px;border-radius:12px;background:#f4fbf8;border:1px solid var(--line)}
+    .msg{margin:10px 0;max-width:82%;position:relative}
+    .me{margin-left:auto}
+    .bubble{padding:14px 16px;border-radius:12px;border:1px solid var(--line);background:#fff;cursor:default}
+    .bubble.me{background:#e9fffb;border-color:rgba(8,145,178,.35);cursor:default}
+    .meta{font-size:.9rem;color:var(--muted);margin-top:4px}
+    .chat-form{display:flex;gap:10px;margin-top:12px}
+    .input, textarea{
+      flex:1;background:#fff;color:var(--ink);
+      border:1px solid var(--line);border-radius:10px;
+      padding:14px;font-size:1.1rem;
+    }
 
-  @media (max-width:980px){
-    .cards{grid-template-columns:1fr}
-    .col-4,.col-6,.col-8{grid-column:span 1}
-    .brand{font-size:2.2rem}
-  }
-</style>
+    /* WhatsApp-like quick menu */
+    .msg-menu{
+      position:absolute;top:-38px;right:8px;
+      background:var(--menu);color:var(--menu-ink);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:10px;padding:6px 10px;font-size:.95rem;
+      display:none;gap:10px;align-items:center;white-space:nowrap;
+      box-shadow:0 10px 25px rgba(0,0,0,.25);
+      animation:fadeIn .15s ease-out forwards;
+    }
+    .msg-menu button{
+      background:transparent;border:none;color:var(--menu-ink);
+      font-weight:700;cursor:pointer;padding:0 4px
+    }
+    .msg-menu button:hover{text-decoration:underline}
+
+    footer{margin:40px 0 20px;color:var(--muted);text-align:center;font-size:1.1rem}
+
+    /* Modal (dialog) */
+    .modal-backdrop{
+      position:fixed;inset:0;background:var(--overlay);
+      display:none;align-items:center;justify-content:center;
+      z-index:1000;animation:fadeIn .2s ease-out forwards;
+    }
+    .modal{
+      width:min(780px,92vw);background:#fff;color:#0b1512;border-radius:16px;
+      border:1px solid #e6efe9;box-shadow:0 20px 50px rgba(0,0,0,.35);
+      opacity:0;transform:translateY(8px);animation:riseIn .2s ease-out forwards;
+      max-height:85vh;overflow:auto;
+    }
+    .modal-header{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid #eef5f0}
+    .modal-title{font-weight:800;font-size:1.25rem}
+    .modal-close{background:transparent;border:none;font-size:1.6rem;line-height:1;cursor:pointer;color:#0b1512}
+    .modal-body{padding:18px;min-height:140px;display:flex;align-items:center;justify-content:center;flex-direction:column}
+    .modal-body p{margin-top:0;margin-bottom:12px;color:#29443b}
+    .modal-footer{padding:14px 18px;border-top:1px solid #eef5f0;text-align:right}
+    .hidden{display:none!important}
+
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    @keyframes riseIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+    /* Loading pulse (brand colors, calm 2.5s) */
+    .loading-pulse{
+      font-weight:800;
+      background:linear-gradient(135deg,var(--g1),var(--g2));
+      -webkit-background-clip:text;background-clip:text;color:transparent;
+      opacity:1; animation:pulseColor 2.5s ease-in-out infinite;
+    }
+    @keyframes pulseColor{
+      0%{opacity:.55}
+      50%{opacity:1}
+      100%{opacity:.55}
+    }
+    .fade-out{animation:fadeOut .35s ease-out forwards}
+    @keyframes fadeOut{to{opacity:0;visibility:hidden}}
+
+    /* Chart containers */
+    .chart-wrap{width:100%;display:flex;align-items:center;justify-content:center}
+    .chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    .ring-row{display:flex;gap:16px;flex-wrap:wrap}
+    canvas{max-width:100%}
+
+    @media (max-width:980px){
+      .logo{width:140px;height:140px}
+      .cards{grid-template-columns:1fr}
+      .col-4,.col-6,.col-8{grid-column:span 1}
+      .chart-grid{grid-template-columns:1fr}
+      body{font-size:18px}
+    }
+  </style>
 </head>
 <body>
   <div class="wrap">
+
     <!-- HERO -->
     <div class="hero">
       <div class="hero-inner">
+        <svg class="logo" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-label="Siphelo’s WellWeight">
+          <defs>
+            <linearGradient id="leafA" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#9ff6ea"/>
+              <stop offset="100%" stop-color="#53e3c8"/>
+            </linearGradient>
+            <linearGradient id="leafB" x1="1" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#5be6cd"/>
+              <stop offset="100%" stop-color="#35d39f"/>
+            </linearGradient>
+          </defs>
+          <path d="M40,70 C10,55 18,20 52,22 C56,42 53,58 40,70 Z" fill="url(#leafB)"/>
+          <path d="M80,70 C110,55 102,20 68,22 C64,42 67,58 80,70 Z" fill="url(#leafA)"/>
+          <path d="M60,18 C76,10 92,26 84,42 C70,38 60,33 60,18 Z" fill="url(#leafA)"/>
+          <rect x="57" y="60" width="6" height="30" rx="3" fill="#0c7c66"/>
+        </svg>
         <div class="brand">Siphelo’s WellWeight</div>
         <div class="tagline">Transform your body. Strengthen your life.</div>
         <div class="cta-row">
@@ -101,10 +206,9 @@
       </div>
     </div>
 
-    <!-- COUNTER -->
-    <div class="counter-strip" aria-live="polite">
-      💪 Over <span class="counter-num" id="counterNum">1</span>
-      <span class="counter-label">Satisfied Clients and counting!</span>
+    <!-- ONE-TIME COUNTER (below hero) -->
+    <div class="counter-strip" id="counterStrip" aria-live="polite">
+      💪 Over <span class="counter-num" id="counterNum">1</span> <span class="counter-label">Satisfied Clients and counting!</span>
     </div>
 
     <!-- SERVICES -->
@@ -197,11 +301,19 @@
       <div class="cards">
         <div class="card col-6">
           <h3>Client Goals</h3>
-          <canvas id="analyticsPie" height="280"></canvas>
+          <div class="chart-wrap"><canvas id="analyticsPie" width="520" height="320"></canvas></div>
         </div>
         <div class="card col-6">
           <h3>Attendance by Trainer</h3>
-          <canvas id="analyticsBar" height="280"></canvas>
+          <div class="chart-wrap"><canvas id="analyticsBar" width="520" height="320"></canvas></div>
+        </div>
+        <div class="card col-8">
+          <h3>Programme Completion</h3>
+          <div class="ring-row" id="ringsRow"></div>
+        </div>
+        <div class="card col-4">
+          <h3>Clients</h3>
+          <ul id="clientList" style="line-height:1.8;margin:0;padding-left:18px"></ul>
         </div>
       </div>
     </section>
@@ -234,173 +346,330 @@
       </div>
     </section>
 
-    <footer>© <span id="year"></span> Siphelo’s WellWeight • Prototype by Fred</footer>
+    <footer>
+      © <span id="year"></span> Siphelo’s WellWeight • Prototype by Fred
+    </footer>
+
   </div>
 
-  <!-- Modal -->
-  <div id="modalBackdrop" class="modal-backdrop" aria-hidden="true">
+  <!-- Modal container (reused for all chips) -->
+  <div id="modalBackdrop" class="modal-backdrop hidden" aria-hidden="true">
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
       <div class="modal-header">
         <div id="modalTitle" class="modal-title">Modal</div>
         <button id="modalClose" class="modal-close" aria-label="Close">×</button>
       </div>
       <div id="modalBody" class="modal-body"></div>
+      <div class="modal-footer">
+        <button id="modalClose2" class="btn" type="button">Close</button>
+      </div>
     </div>
   </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  // Smooth scroll buttons
-  const byId = (id)=>document.getElementById(id);
-  byId('ctaIntro').addEventListener('click',()=>byId('contact').scrollIntoView({behavior:'smooth'}));
-  byId('ctaChat').addEventListener('click',()=>byId('community').scrollIntoView({behavior:'smooth'}));
+  <script>
+    // --- Smooth section scroll via hero buttons (kept) ---
+    const introBtn=document.getElementById('ctaIntro');
+    const chatBtn=document.getElementById('ctaChat');
+    introBtn.addEventListener('click',()=>document.getElementById('contact').scrollIntoView({behavior:'smooth'}));
+    chatBtn.addEventListener('click',()=>document.getElementById('community').scrollIntoView({behavior:'smooth'}));
 
-  // One-time counter
-  (function(){
-    const el = byId('counterNum'); if(!el) return;
-    const start=1, end=445, duration=2500;
-    const t0=performance.now();
-    const tick=(t)=>{
-      const p=Math.min((t-t0)/duration,1);
-      const eased=1-Math.pow(1-p,3);
-      const val=Math.floor(start+(end-start)*eased);
-      el.textContent=val.toLocaleString();
-      if(p<1) requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
-  })();
+    // --- Contact form demo (kept) ---
+    function demoSubmit(form){
+      const name=form.name.value.trim();
+      const toast=document.getElementById('toast');
+      toast.textContent=`Thanks, ${name}. We’ll email you a schedule within 24h.`;
+      form.reset();
+      setTimeout(()=>toast.textContent='',4200);
+    }
 
-  // Contact form toast
-  window.demoSubmit = (form)=>{
-    const name=form.name.value.trim();
-    const toast=byId('toast'); toast.textContent = `Thanks, ${name}. We’ll email you a schedule within 24h.`;
-    form.reset(); setTimeout(()=>toast.textContent='',4200);
-  };
-
-  // Chat (local demo) + edit own messages
-  const KEY='wellweight_chat_v3';
-  const log=byId('log'), form=byId('chatForm'), nameI=byId('name'), textI=byId('text');
-  const load=()=>{try{return JSON.parse(localStorage.getItem(KEY))||[]}catch{return []}};
-  const save=(L)=>localStorage.setItem(KEY,JSON.stringify(L));
-  function renderLog(){
-    const L=load(); log.innerHTML='';
-    L.forEach((m,i)=>{
-      const wrap=document.createElement('div'); wrap.className='msg'+(m.me?' me':'');
-      const bub=document.createElement('div'); bub.className='bubble'; bub.textContent=m.text;
-      const meta=document.createElement('div'); meta.className='meta'; meta.textContent=`${m.name} • ${new Date(m.at||Date.now()).toLocaleString()}`;
-      // edit own
-      if(m.me){
-        bub.addEventListener('click',()=>{
-          const v=prompt('Edit message:',m.text);
-          if(v!==null){ m.text=v.trim(); const L2=load(); L2[i]=m; save(L2); renderLog(); }
-        });
+    // --- One-time counter under hero ---
+    (function runCounter(){
+      const el=document.getElementById('counterNum'); if(!el) return;
+      const start=1, end=445, duration=2500;
+      const t0=performance.now();
+      function step(t){
+        const p=Math.min((t-t0)/duration,1);
+        const eased=1- Math.pow(1-p,3); // easeOutCubic
+        const val=Math.floor(start + (end-start)*eased);
+        el.textContent=val.toLocaleString();
+        if(p<1) requestAnimationFrame(step);
       }
-      wrap.appendChild(bub); wrap.appendChild(meta); log.appendChild(wrap);
-    });
-    log.scrollTop=log.scrollHeight;
-  }
-  form.addEventListener('submit',e=>{
-    e.preventDefault();
-    const n=(nameI.value||'Guest').trim(), t=(textI.value||'').trim(); if(!t) return;
-    const you=/fred|siphelo/i.test(n);
-    const L=load(); L.push({name:n,text:t,me:you,at:Date.now()}); save(L);
-    textI.value=''; renderLog();
-  });
-  renderLog();
+      requestAnimationFrame(step);
+    })();
 
-  // Modal system
-  const MODALS={
-    gymhome:{title:"Gym / Home",html:`<p>Train anywhere: at your local gym or in the comfort of your home. Programmes adapt to your equipment and space.</p>`},
-    customplan:{title:"Custom Plan",html:`<p>Your personal programme, updated weekly around your goals, schedule, and recovery.</p>`},
-    teamenergy:{title:"Team Energy",html:`<p>Small-group sessions keep motivation high with shared energy and accountability.</p>`},
-    budget:{title:"Budget Friendly",html:`<p>Group sessions reduce cost per person with the same expert coaching.</p>`},
-    videochecks:{title:"Video Form Checks",html:`<p>Upload short clips for technique feedback. We cue posture, tempo, and range.</p>`},
-    progress:{
-      title:"Progress Tracking",
-      charts:true,
-      html:`
-        <div class="loading-pulse" id="loader">Loading charts…</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-          <div><canvas id="progLine" height="200"></canvas></div>
-          <div><canvas id="progPie" height="200"></canvas></div>
-        </div>
-        <div style="margin-top:14px"><canvas id="progBar" height="220"></canvas></div>
-      `
+    // --- Local chat with WhatsApp-like long-press Edit for own messages ---
+    const KEY='wellweight_chat_v2';
+    const log=document.getElementById('log');
+    const formEl=document.getElementById('chatForm');
+    const nameI=document.getElementById('name');
+    const textI=document.getElementById('text');
+
+    const load=()=>{try{return JSON.parse(localStorage.getItem(KEY))||[]}catch{return []}};
+    const save=(L)=>localStorage.setItem(KEY,JSON.stringify(L));
+
+    function render(){
+      const L=load(); log.innerHTML='';
+      L.forEach((m,idx)=>{
+        const wrap=document.createElement('div'); wrap.className='msg '+(m.me?'me':'');
+        const b=document.createElement('div'); b.className='bubble '+(m.me?'me':''); b.textContent=m.text; b.dataset.idx=idx;
+        const meta=document.createElement('div'); meta.className='meta'; meta.textContent=`${m.name} • ${new Date(m.at).toLocaleString()}`;
+
+        const menu=document.createElement('div'); menu.className='msg-menu'; menu.innerHTML = `<button data-act="edit">Edit ✏️</button>`;
+        wrap.appendChild(menu);
+
+        wrap.appendChild(b); wrap.appendChild(meta); log.appendChild(wrap);
+
+        if(m.me){
+          let pressTimer=null;
+          const showMenu=()=>{ menu.style.display='flex'; };
+          const hideMenu=()=>{ menu.style.display='none'; };
+
+          b.addEventListener('contextmenu',(e)=>{ e.preventDefault(); showMenu(); });
+          b.addEventListener('mousedown',()=>{ pressTimer=setTimeout(showMenu,500); });
+          b.addEventListener('touchstart',()=>{ pressTimer=setTimeout(showMenu,500); },{passive:true});
+          ['mouseup','mouseleave','touchend','touchcancel'].forEach(ev=> b.addEventListener(ev,()=>{ clearTimeout(pressTimer); }));
+
+          menu.addEventListener('click',(e)=>{
+            const act=(e.target.dataset.act||'').toLowerCase();
+            if(act!=='edit') return; hideMenu();
+
+            const input=document.createElement('input');
+            input.type='text'; input.value=m.text; input.className='input'; input.style.width='100%';
+            b.replaceWith(input);
+            input.focus(); input.selectionStart=input.selectionEnd=input.value.length;
+
+            const commit=()=>{
+              const txt=input.value.trim();
+              if(txt){ m.text=txt; const L2=load(); L2[idx]=m; save(L2); }
+              render();
+            };
+            input.addEventListener('blur',commit);
+            input.addEventListener('keydown',(ev)=>{ if(ev.key==='Enter') commit(); });
+          });
+
+          document.addEventListener('click',(e)=>{ if(!wrap.contains(e.target)) menu.style.display='none'; });
+        }
+      });
+      log.scrollTop=log.scrollHeight;
     }
-  };
 
-  const backdrop=byId('modalBackdrop'), mTitle=byId('modalTitle'), mBody=byId('modalBody');
-  const close=byId('modalClose'); close.addEventListener('click',()=>{backdrop.style.display='none'; mBody.innerHTML='';});
-  backdrop.addEventListener('click',(e)=>{ if(e.target===backdrop){backdrop.style.display='none'; mBody.innerHTML='';} });
+    formEl.addEventListener('submit',e=>{
+      e.preventDefault();
+      const n=(nameI.value||'Guest').trim();
+      const t=(textI.value||'').trim();
+      if(!t) return;
+      const you=/fred|siphelo/i.test(n);
+      const L=load();
+      L.push({name:n,text:t,at:Date.now(),me:you});
+      save(L);
+      textI.value=''; render();
+    });
 
-  function openModal(key){
-    const data=MODALS[key]; if(!data) return;
-    mTitle.textContent=data.title; mBody.innerHTML=data.html; backdrop.style.display='flex';
+    render();
+    document.getElementById('year').textContent=new Date().getFullYear();
 
-    if(data.charts){
-      setTimeout(()=>{ // ensure modal is visible first
-        // Build charts with Chart.js
-        const lineCtx = document.getElementById('progLine');
-        const pieCtx  = document.getElementById('progPie');
-        const barCtx  = document.getElementById('progBar');
+    // --- Modal system with global delayed render + pulsing loader ---
+    const MODALS = {
+      gymhome: {
+        title: "Gym / Home",
+        body: `<p>Train anywhere: at your local gym or in the comfort of your home. Programmes adapt to your equipment and space.</p>`
+      },
+      customplan: {
+        title: "Custom Plan",
+        body: `<p>Your personal programme built around your goals, schedule, and recovery. Weekly adjustments keep you progressing.</p>`
+      },
+      progress: {
+        title: "Progress Tracking",
+        charts: true, // flag tells renderer to wait and draw
+        bodyHTML: `
+          <p>See consistent improvement with simple weekly tracking:</p>
+          <div class="chart-grid">
+            <div class="chart-wrap"><canvas id="progressLine" width="360" height="220"></canvas></div>
+            <div class="chart-wrap"><canvas id="progressPie" width="360" height="220"></canvas></div>
+          </div>
+          <div class="ring-row" style="margin-top:14px">
+            <canvas id="ringThabo" width="120" height="120" title="Thabo"></canvas>
+            <canvas id="ringMegan" width="120" height="120" title="Megan"></canvas>
+            <canvas id="ringChadwin" width="120" height="120" title="Chadwin"></canvas>
+          </div>
+          <div class="chart-wrap" style="margin-top:14px"><canvas id="progressBar" width="720" height="220"></canvas></div>
+        `
+      },
+      teamenergy: {
+        title: "Team Energy",
+        body: `<p>Small-group sessions keep motivation high with shared energy, accountability, and friendly competition.</p>`
+      },
+      budget: {
+        title: "Budget Friendly",
+        body: `<p>Get pro-level coaching that fits your budget — share a session, save per person, keep the same expert guidance.</p>`
+      },
+      videochecks: {
+        title: "Video Form Checks",
+        body: `<p>Upload short clips for feedback on technique, posture, and tempo. We’ll refine cues so every rep counts.</p>`
+      }
+    };
 
-        if(lineCtx){
-          new Chart(lineCtx,{
-            type:'line',
-            data:{labels:['W1','W2','W3','W4','W5','W6','W7','W8'],
-              datasets:[{label:'Strength (kg)',data:[20,28,31,35,40,46,50,56],tension:.35,fill:false}]},
-            options:{responsive:true,plugins:{legend:{display:true}},scales:{y:{beginAtZero:true}}}
+    const backdrop = document.getElementById('modalBackdrop');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody  = document.getElementById('modalBody');
+    const closeBtns  = [document.getElementById('modalClose'), document.getElementById('modalClose2')];
+
+    function openModal(key){
+      const data = MODALS[key]; if(!data) return;
+      modalTitle.textContent = data.title;
+
+      // Show pulsing brand loader first
+      modalBody.innerHTML = `<div id="loader" class="loading-pulse">Loading charts…</div>`;
+      backdrop.classList.remove('hidden');
+      backdrop.style.display = 'flex';
+
+      // After fade-in + slight delay, render content
+      setTimeout(()=>{
+        if(data.charts){
+          // Insert actual chart DOM, keep loader until drawn
+          modalBody.insertAdjacentHTML('beforeend', `<div id="chartContent" style="width:100%;">${data.bodyHTML}</div>`);
+          drawProgressCharts(() => {
+            const loader=document.getElementById('loader');
+            if(loader){ loader.classList.add('fade-out'); setTimeout(()=>loader.remove(), 350); }
           });
+        }else{
+          // Non-chart body
+          modalBody.innerHTML = data.body || '';
         }
-        if(pieCtx){
-          new Chart(pieCtx,{
-            type:'doughnut',
-            data:{labels:['Fat Loss','Strength','Muscle Gain','Endurance'],
-              datasets:[{data:[34,26,22,18]}]},
-            options:{responsive:true,plugins:{legend:{position:'bottom'}}}
-          });
-        }
-        if(barCtx){
-          new Chart(barCtx,{
-            type:'bar',
-            data:{labels:['Sipho','Bianca','Keagan'],
-              datasets:[{label:'Sessions Completed',data:[18,22,15]}]},
-            options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}
-          });
-        }
-
-        const loader=byId('loader'); if(loader){ loader.classList.add('fade-out'); setTimeout(()=>loader.remove(),350); }
-      }, 300);
+      }, 300); // global delay so fade-in completes
     }
-  }
 
-  // Wire chips
-  document.querySelectorAll('.chip[data-modal]').forEach(ch=>{
-    ch.addEventListener('click',()=>openModal(ch.dataset.modal));
-  });
+    function closeModal(){
+      backdrop.classList.add('hidden');
+      backdrop.style.display = 'none';
+      modalBody.innerHTML = '';
+    }
+    closeBtns.forEach(b=>b.addEventListener('click', closeModal));
+    backdrop.addEventListener('click', (e)=>{ if(e.target === backdrop) closeModal(); });
 
-  // Analytics charts (on page)
-  const pieC = byId('analyticsPie');
-  if(pieC){
-    new Chart(pieC, {
-      type:'pie',
-      data:{labels:['Fat Loss','Strength','Muscle Gain','Endurance'],
-        datasets:[{data:[32,28,24,16]}]},
-      options:{plugins:{legend:{position:'bottom'}}}
+    // Wire chips
+    document.querySelectorAll('.chip[data-modal]').forEach(ch=>{
+      ch.addEventListener('click', ()=> openModal(ch.dataset.modal));
     });
-  }
-  const barC = byId('analyticsBar');
-  if(barC){
-    new Chart(barC, {
-      type:'bar',
-      data:{labels:['Sipho','Bianca','Keagan','Lerato'],datasets:[{label:'Attendance',data:[40,55,33,28]}]},
-      options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}
-    });
-  }
 
-  // Year
-  byId('year').textContent = new Date().getFullYear();
-});
-</script>
+    // --- Analytics Section Charts (on page load) ---
+    const CLIENTS = [
+      {name:'Thabo', pct:78}, {name:'Zanele', pct:54}, {name:'Chadwin', pct:88},
+      {name:'Megan', pct:62}, {name:'Keagan', pct:70}, {name:'Lihle', pct:47},
+      {name:'Bianca', pct:66}, {name:'Sipho', pct:59}, {name:'Warren', pct:73},
+      {name:'Candice', pct:61}, {name:'Kyle', pct:57}, {name:'Lerato', pct:64}
+    ];
+    const listEl = document.getElementById('clientList');
+    if(listEl){ listEl.innerHTML = CLIENTS.map(c=>`<li>${c.name} — ${c.pct}% complete</li>`).join(''); }
+
+    const ringsRow = document.getElementById('ringsRow');
+    if(ringsRow){
+      CLIENTS.slice(0,6).forEach(c=>{
+        const cv = document.createElement('canvas');
+        cv.width=120; cv.height=120; cv.title=c.name;
+        ringsRow.appendChild(cv);
+        drawRing(cv, c.pct, c.name, '#0ea5e9');
+      });
+    }
+
+    const pieA = document.getElementById('analyticsPie');
+    const barA = document.getElementById('analyticsBar');
+    if(pieA) drawPie(pieA,
+      [{label:'Fat Loss',v:32,color:'#0ea5e9'},
+       {label:'Strength',v:28,color:'#22c55e'},
+       {label:'Muscle Gain',v:24,color:'#06b6d4'},
+       {label:'Endurance',v:16,color:'#a78bfa'}]);
+    if(barA) drawBar(barA, ['Sipho','Bianca','Keagan','Lerato'], [40, 55, 33, 28], {color:'#2563eb'});
+
+    // ------- PROGRESS CHARTS DRAWER -------
+    function drawProgressCharts(done){
+      // helpers
+      const $ = id => document.getElementById(id);
+      // line
+      drawLine($('#progressLine'), [20,28,31,35,40,46,50,56], {label:'Strength', color:'#1e3a8a'});
+      // pie
+      drawPie($('#progressPie'),
+        [{label:'Fat Loss',v:34,color:'#0ea5e9'},
+         {label:'Strength',v:26,color:'#22c55e'},
+         {label:'Muscle Gain',v:22,color:'#06b6d4'},
+         {label:'Endurance',v:18,color:'#a78bfa'}]);
+      // rings
+      drawRing($('#ringThabo'), 78, 'Thabo', '#2563eb');
+      drawRing($('#ringMegan'), 62, 'Megan', '#0ea5e9');
+      drawRing($('#ringChadwin'), 88, 'Chadwin', '#10b981');
+      // bar
+      drawBar($('#progressBar'),
+        ['Sipho','Bianca','Keagan'],
+        [18, 22, 15],
+        {color:'#1e3a8a'});
+      if(typeof done==='function') done();
+    }
+
+    // ------- CANVAS DRAW HELPERS -------
+    function drawLine(canvas, points, {label='', color='#1e3a8a'}={}){
+      if(!canvas) return; const ctx=canvas.getContext('2d');
+      const W=canvas.width, H=canvas.height; ctx.clearRect(0,0,W,H);
+      const left=40, bottom=H-30, top=20, right=W-20;
+      ctx.strokeStyle='#cfd8d3'; ctx.lineWidth=1;
+      ctx.beginPath(); ctx.moveTo(left,top); ctx.lineTo(left,bottom); ctx.lineTo(right,bottom); ctx.stroke();
+      ctx.strokeStyle='#e9f3ef';
+      for(let i=0;i<4;i++){ const y=bottom-(i+1)*(bottom-top)/4; ctx.beginPath(); ctx.moveTo(left,y); ctx.lineTo(right,y); ctx.stroke(); }
+      const max=Math.max(...points)*1.1; const stepX=(right-left)/(points.length-1);
+      ctx.strokeStyle=color; ctx.lineWidth=3; ctx.beginPath();
+      points.forEach((v,i)=>{ const x=left+i*stepX; const y=bottom-(v/max)*(bottom-top); if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y); });
+      ctx.stroke();
+      ctx.fillStyle=color;
+      points.forEach((v,i)=>{ const x=left+i*stepX; const y=bottom-(v/max)*(bottom-top); ctx.beginPath(); ctx.arc(x,y,3,0,Math.PI*2); ctx.fill(); });
+      if(label){ ctx.fillStyle='#29443b'; ctx.font='bold 14px Inter'; ctx.fillText(label, left, top-4); }
+    }
+
+    function drawPie(canvas, slices){
+      if(!canvas) return; const ctx=canvas.getContext('2d');
+      const W=canvas.width, H=canvas.height; ctx.clearRect(0,0,W,H);
+      const cx=W/2, cy=H/2, r=Math.min(W,H)*0.32;
+      const sum=slices.reduce((a,s)=>a+s.v,0);
+      let a0=-Math.PI/2;
+      slices.forEach(s=>{
+        const ang=(s.v/sum)*Math.PI*2;
+        ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,a0,a0+ang); ctx.closePath();
+        ctx.fillStyle=s.color; ctx.fill();
+        const mid=a0+ang/2; const lx=cx+Math.cos(mid)*(r+16), ly=cy+Math.sin(mid)*(r+16);
+        ctx.fillStyle='#29443b'; ctx.font='12px Inter'; ctx.textAlign='center';
+        ctx.fillText(s.label, lx, ly);
+        a0+=ang;
+      });
+    }
+
+    function drawRing(canvas, pct, label, color='#0ea5e9'){
+      if(!canvas) return; const ctx=canvas.getContext('2d');
+      const W=canvas.width, H=canvas.height; ctx.clearRect(0,0,W,H);
+      const cx=W/2, cy=H/2, r=Math.min(W,H)*0.38;
+      ctx.strokeStyle='#e7efeb'; ctx.lineWidth=12; ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.stroke();
+      const ang=pct/100*Math.PI*2;
+      ctx.strokeStyle=color; ctx.lineWidth=12; ctx.lineCap='round';
+      ctx.beginPath(); ctx.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+ang); ctx.stroke();
+      ctx.fillStyle='#0b1512'; ctx.font='bold 18px Inter'; ctx.textAlign='center';
+      ctx.fillText(`${pct}%`, cx, cy+6);
+      ctx.font='12px Inter'; ctx.fillStyle='#29443b'; ctx.fillText(label, cx, cy+26);
+    }
+
+    function drawBar(canvas, labels, values, {color='#2563eb'}={}){
+      if(!canvas) return; const ctx=canvas.getContext('2d');
+      const W=canvas.width, H=canvas.height; ctx.clearRect(0,0,W,H);
+      const left=50, bottom=H-30, top=20, right=W-20;
+      ctx.strokeStyle='#cfd8d3'; ctx.lineWidth=1;
+      ctx.beginPath(); ctx.moveTo(left,top); ctx.lineTo(left,bottom); ctx.lineTo(right,bottom); ctx.stroke();
+      ctx.strokeStyle='#e9f3ef';
+      for(let i=0;i<4;i++){ const y=bottom-(i+1)*(bottom-top)/4; ctx.beginPath(); ctx.moveTo(left,y); ctx.lineTo(right,y); ctx.stroke(); }
+      const max=Math.max(...values)*1.2; const bw=(right-left)/values.length*0.6;
+      values.forEach((v,i)=>{
+        const x=left+(i+0.2)*((right-left)/values.length);
+        const h=(v/max)*(bottom-top);
+        ctx.fillStyle=color; ctx.fillRect(x, bottom-h, bw, h);
+        ctx.fillStyle='#29443b'; ctx.font='12px Inter'; ctx.textAlign='center';
+        ctx.fillText(labels[i], x+bw/2, bottom+16);
+      });
+    }
+  </script>
 </body>
 </html>
