@@ -8,11 +8,10 @@
   <style>
     :root{
       --bg:#0e1412;--panel:#121a17;--ink:#e6f3ec;--muted:#b8d1c3;
-      --leaf1:#38b000;--leaf2:#70e000;--leaf3:#008000;
-      --accent:#00c2a8;--ring:rgba(0,194,168,.35);
+      --leaf1:#38b000;--leaf2:#70e000;--accent:#00c2a8;--ring:rgba(0,194,168,.35);
       --shadow:0 20px 45px rgba(0,0,0,.45);--radius:18px;
     }
-    *{box-sizing:border-box}
+    *{box-sizing:border-box;scroll-behavior:smooth}
     html,body{margin:0;height:100%}
     body{font-family:Inter,sans-serif;background:linear-gradient(180deg,#0b110f,#0f1613 30%,#111a16 100%);color:var(--ink)}
     a{color:var(--accent);text-decoration:none}
@@ -20,7 +19,8 @@
     .wrap{max-width:1200px;margin:0 auto;padding:28px}
     header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}
     .brand{display:flex;align-items:center;gap:14px}
-    .logo{width:52px;height:52px}
+    .logo{width:104px;height:104px;transition:transform .2s}
+    .logo:hover{transform:scale(1.05)}
     .title{font-weight:800;letter-spacing:.2px}
     .tag{font-size:.9rem;color:var(--muted)}
     nav a{margin:0 10px;font-weight:600}
@@ -30,8 +30,14 @@
     .hero h1{margin:0 0 10px;font-size:2.2rem}
     .hero p{margin:0 0 14px;color:var(--muted)}
     .cta{display:flex;gap:12px;margin-top:10px}
-    .btn{background:var(--accent);color:#022;padding:12px 16px;border-radius:12px;border:none;font-weight:800;cursor:pointer;box-shadow:0 10px 25px var(--ring)}
-    .btn.alt{background:transparent;color:var(--ink);border:1px solid rgba(255,255,255,.12)}
+    .btn{
+      background:var(--accent);color:#022;padding:12px 18px;
+      border-radius:12px;border:none;font-weight:800;cursor:pointer;
+      box-shadow:0 10px 25px var(--ring);
+      transition:transform .1s, box-shadow .2s;
+    }
+    .btn:hover{transform:scale(1.05);box-shadow:0 0 25px var(--accent)}
+    .btn.alt{background:transparent;color:var(--ink);border:1px solid rgba(255,255,255,.2)}
     .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
     .stat{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:12px;text-align:center}
     .stat b{display:block;font-size:1.3rem}
@@ -42,24 +48,16 @@
     .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
     .col-4{grid-column:span 4}
     .col-6{grid-column:span 6}
-    .col-8{grid-column:span 8}
     .tile{background:linear-gradient(180deg,var(--panel),#0f1814);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:18px;box-shadow:var(--shadow)}
     .tile h3{margin:0 0 8px}
     .price{font-weight:800;font-size:1.1rem;margin-top:6px}
     .chip{display:inline-block;padding:5px 9px;border-radius:999px;background:rgba(0,194,168,.15);border:1px solid var(--ring);font-size:.8rem;margin-right:6px}
-    /* Hide supplement SVGs */
     .card-img{display:none}
-    .chat{display:flex;flex-direction:column;height:420px}
-    .chat-log{flex:1;overflow:auto;padding:12px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)}
-    .msg{margin:8px 0;max-width:80%}
-    .me{margin-left:auto}
-    .bubble{padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.06);background:linear-gradient(180deg,#13201b,#0f1814)}
-    .bubble.me{background:linear-gradient(180deg,#143c33,#0f1814);border-color:rgba(0,194,168,.35)}
-    .meta{font-size:.72rem;color:var(--muted);margin-top:3px}
-    .chat-form{display:flex;gap:8px;margin-top:10px}
-    .input, textarea{flex:1;background:#0c1411;color:var(--ink);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px}
     footer{margin:34px 0 18px;color:var(--muted);text-align:center}
-    @media (max-width:980px){.hero{grid-template-columns:1fr}.grid{grid-template-columns:1fr}}
+    @media (max-width:980px){
+      .hero{grid-template-columns:1fr}
+      .logo{width:80px;height:80px}
+    }
   </style>
 </head>
 <body>
@@ -78,56 +76,53 @@
       </div>
     </header>
 
-    <section id="services">
+    <div class="hero">
+      <div class="card">
+        <h1>Stronger body. Clearer mind. Sustainable results.</h1>
+        <p>Train with Siphelo, track your progress, and connect with a supportive client community.</p>
+        <div class="cta">
+          <button class="btn" id="btnIntro">Book a Free Intro</button>
+          <button class="btn alt" id="btnChat">Open Client Chat</button>
+        </div>
+      </div>
+    </div>
+
+    <section id="community">
       <div class="section-head">
-        <h2>Coaching Services</h2>
-        <div class="kicker">In-person & online programmes</div>
+        <h2>Client Community</h2>
+        <div class="kicker">Prototype chat section</div>
       </div>
-      <div class="grid">
-        <div class="tile col-4">
-          <h3>1:1 Personal Training</h3>
-          <p>Technique-first strength & conditioning tailored to your goals.</p>
-          <div class="chip">Gym / Home</div><div class="chip">Custom Plan</div>
-          <div class="price">From R399 / session</div>
-        </div>
-        <div class="tile col-4">
-          <h3>Online Coaching</h3>
-          <p>Weekly check-ins, habit systems, and progress tracking.</p>
-          <div class="chip">Progress Tracking</div><div class="chip">Video Form Checks</div>
-          <div class="price">From R899 / month</div>
-        </div>
-        <div class="tile col-4">
-          <h3>Small Group (2–6)</h3>
-          <p>Train with friends or family. Shared motivation, reduced cost.</p>
-          <div class="chip">Team Energy</div><div class="chip">Budget Friendly</div>
-          <div class="price">From R249 / person</div>
-        </div>
-      </div>
+      <p>Welcome to the WellWeight community! (This will later link to a real-time chat feature.)</p>
     </section>
 
-    <section id="supplements">
+    <section id="contact">
       <div class="section-head">
-        <h2>Supplements</h2>
-        <div class="kicker">Protein & creatine for better recovery and strength</div>
+        <h2>Contact</h2>
+        <div class="kicker">Reach out or book your intro session</div>
       </div>
-      <div class="grid">
-        <div class="tile col-6">
-          <h3>Whey Protein (1kg)</h3>
-          <p>Smooth blend for muscle repair. Vanilla & chocolate flavours.</p>
-          <div class="price">From R399</div>
-        </div>
-        <div class="tile col-6">
-          <h3>Creatine Monohydrate (300g)</h3>
-          <p>Clinically-backed for strength & power. Pure, unflavoured.</p>
-          <div class="price">From R249</div>
-        </div>
-      </div>
+      <p>Send us a message at <strong>info@wellweight.co.za</strong> or WhatsApp <strong>+27 65 000 0000</strong>.</p>
     </section>
 
     <footer>© <span id="year"></span> Siphelo’s WellWeight • Prototype by Fred</footer>
   </div>
+
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    const introBtn = document.getElementById('btnIntro');
+    const chatBtn = document.getElementById('btnChat');
+
+    introBtn.addEventListener('click', () => {
+      document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+      introBtn.style.transform = 'scale(1.1)';
+      setTimeout(() => introBtn.style.transform = 'scale(1)', 200);
+    });
+
+    chatBtn.addEventListener('click', () => {
+      document.getElementById('community').scrollIntoView({ behavior: 'smooth' });
+      chatBtn.style.transform = 'scale(1.1)';
+      setTimeout(() => chatBtn.style.transform = 'scale(1)', 200);
+    });
   </script>
 </body>
 </html>
