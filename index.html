@@ -45,6 +45,18 @@
     .btn:hover{transform:translateY(-2px)}
     .btn.alt{background:#e31b0c;color:white;border:none}
 
+    /* COUNTER */
+    .counter-strip{
+      display:flex;align-items:center;justify-content:center;
+      gap:10px;padding:14px 16px;margin:-6px auto 26px;
+      background:#ffffff;border:1px solid var(--line);
+      border-radius:14px;box-shadow:var(--shadow);max-width:700px;
+      color:#0b1512;
+    }
+    .counter-num{font-weight:800;font-size:1.4rem;background:linear-gradient(135deg,var(--g1),var(--g2));
+      -webkit-background-clip:text;background-clip:text;color:transparent}
+    .counter-label{font-size:1.05rem;color:#244038}
+
     /* SECTIONS */
     section{margin:40px 0}
     .section-head{text-align:center;margin-bottom:24px}
@@ -125,7 +137,7 @@
     .modal-header{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid #eef5f0}
     .modal-title{font-weight:800;font-size:1.25rem}
     .modal-close{background:transparent;border:none;font-size:1.6rem;line-height:1;cursor:pointer;color:#0b1512}
-    .modal-body{padding:18px}
+    .modal-body{padding:18px;min-height:140px;display:flex;align-items:center;justify-content:center;flex-direction:column}
     .modal-body p{margin-top:0;margin-bottom:12px;color:#29443b}
     .modal-footer{padding:14px 18px;border-top:1px solid #eef5f0;text-align:right}
     .hidden{display:none!important}
@@ -133,11 +145,25 @@
     @keyframes fadeIn{from{opacity:0}to{opacity:1}}
     @keyframes riseIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
+    /* Loading pulse (brand colors, calm 2.5s) */
+    .loading-pulse{
+      font-weight:800;
+      background:linear-gradient(135deg,var(--g1),var(--g2));
+      -webkit-background-clip:text;background-clip:text;color:transparent;
+      opacity:1; animation:pulseColor 2.5s ease-in-out infinite;
+    }
+    @keyframes pulseColor{
+      0%{opacity:.55}
+      50%{opacity:1}
+      100%{opacity:.55}
+    }
+    .fade-out{animation:fadeOut .35s ease-out forwards}
+    @keyframes fadeOut{to{opacity:0;visibility:hidden}}
+
     /* Chart containers */
     .chart-wrap{width:100%;display:flex;align-items:center;justify-content:center}
     .chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
     .ring-row{display:flex;gap:16px;flex-wrap:wrap}
-
     canvas{max-width:100%}
 
     @media (max-width:980px){
@@ -178,6 +204,11 @@
           <button class="btn alt" id="ctaChat">Open Client Chat</button>
         </div>
       </div>
+    </div>
+
+    <!-- ONE-TIME COUNTER (below hero) -->
+    <div class="counter-strip" id="counterStrip" aria-live="polite">
+      💪 Over <span class="counter-num" id="counterNum">1</span> <span class="counter-label">Satisfied Clients and counting!</span>
     </div>
 
     <!-- SERVICES -->
@@ -261,7 +292,7 @@
       </div>
     </section>
 
-    <!-- ANALYTICS (NEW) -->
+    <!-- ANALYTICS -->
     <section id="analytics">
       <div class="section-head">
         <h2>Analytics</h2>
@@ -351,6 +382,21 @@
       setTimeout(()=>toast.textContent='',4200);
     }
 
+    // --- One-time counter under hero ---
+    (function runCounter(){
+      const el=document.getElementById('counterNum'); if(!el) return;
+      const start=1, end=445, duration=2500;
+      const t0=performance.now();
+      function step(t){
+        const p=Math.min((t-t0)/duration,1);
+        const eased=1- Math.pow(1-p,3); // easeOutCubic
+        const val=Math.floor(start + (end-start)*eased);
+        el.textContent=val.toLocaleString();
+        if(p<1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    })();
+
     // --- Local chat with WhatsApp-like long-press Edit for own messages ---
     const KEY='wellweight_chat_v2';
     const log=document.getElementById('log');
@@ -422,7 +468,7 @@
     render();
     document.getElementById('year').textContent=new Date().getFullYear();
 
-    // --- Modal system for chips (with fade-in) ---
+    // --- Modal system with global delayed render + pulsing loader ---
     const MODALS = {
       gymhome: {
         title: "Gym / Home",
@@ -434,7 +480,8 @@
       },
       progress: {
         title: "Progress Tracking",
-        body: `
+        charts: true, // flag tells renderer to wait and draw
+        bodyHTML: `
           <p>See consistent improvement with simple weekly tracking:</p>
           <div class="chart-grid">
             <div class="chart-wrap"><canvas id="progressLine" width="360" height="220"></canvas></div>
@@ -470,29 +517,28 @@
     function openModal(key){
       const data = MODALS[key]; if(!data) return;
       modalTitle.textContent = data.title;
-      modalBody.innerHTML = data.body;
+
+      // Show pulsing brand loader first
+      modalBody.innerHTML = `<div id="loader" class="loading-pulse">Loading charts…</div>`;
       backdrop.classList.remove('hidden');
       backdrop.style.display = 'flex';
 
-      if(key === 'progress'){
-        // --- Draw progress charts ---
-        // helpers
-        const $ = id => document.getElementById(id);
-        drawLine($('#progressLine'), [20,28,31,35,40,46,50,56], {label:'Strength', color:'#1e3a8a'});
-        drawPie($('#progressPie'),
-          [{label:'Fat Loss',v:34,color:'#0ea5e9'},
-           {label:'Strength',v:26,color:'#22c55e'},
-           {label:'Muscle Gain',v:22,color:'#06b6d4'},
-           {label:'Endurance',v:18,color:'#a78bfa'}]);
-        drawRing($('#ringThabo'), 78, 'Thabo', '#2563eb');
-        drawRing($('#ringMegan'), 62, 'Megan', '#0ea5e9');
-        drawRing($('#ringChadwin'), 88, 'Chadwin', '#10b981');
-        drawBar($('#progressBar'),
-          ['Sipho','Bianca','Keagan'],
-          [18, 22, 15],
-          {color:'#1e3a8a'});
-      }
+      // After fade-in + slight delay, render content
+      setTimeout(()=>{
+        if(data.charts){
+          // Insert actual chart DOM, keep loader until drawn
+          modalBody.insertAdjacentHTML('beforeend', `<div id="chartContent" style="width:100%;">${data.bodyHTML}</div>`);
+          drawProgressCharts(() => {
+            const loader=document.getElementById('loader');
+            if(loader){ loader.classList.add('fade-out'); setTimeout(()=>loader.remove(), 350); }
+          });
+        }else{
+          // Non-chart body
+          modalBody.innerHTML = data.body || '';
+        }
+      }, 300); // global delay so fade-in completes
     }
+
     function closeModal(){
       backdrop.classList.add('hidden');
       backdrop.style.display = 'none';
@@ -507,57 +553,73 @@
     });
 
     // --- Analytics Section Charts (on page load) ---
-    // Mock names & completion
     const CLIENTS = [
       {name:'Thabo', pct:78}, {name:'Zanele', pct:54}, {name:'Chadwin', pct:88},
       {name:'Megan', pct:62}, {name:'Keagan', pct:70}, {name:'Lihle', pct:47},
       {name:'Bianca', pct:66}, {name:'Sipho', pct:59}, {name:'Warren', pct:73},
       {name:'Candice', pct:61}, {name:'Kyle', pct:57}, {name:'Lerato', pct:64}
     ];
-    // render client list
     const listEl = document.getElementById('clientList');
-    listEl.innerHTML = CLIENTS.map(c=>`<li>${c.name} — ${c.pct}% complete</li>`).join('');
+    if(listEl){ listEl.innerHTML = CLIENTS.map(c=>`<li>${c.name} — ${c.pct}% complete</li>`).join(''); }
 
-    // draw rings in analytics
     const ringsRow = document.getElementById('ringsRow');
-    CLIENTS.slice(0,6).forEach(c=>{
-      const cv = document.createElement('canvas');
-      cv.width=120; cv.height=120; cv.title=c.name;
-      ringsRow.appendChild(cv);
-      drawRing(cv, c.pct, c.name, '#0ea5e9');
-    });
+    if(ringsRow){
+      CLIENTS.slice(0,6).forEach(c=>{
+        const cv = document.createElement('canvas');
+        cv.width=120; cv.height=120; cv.title=c.name;
+        ringsRow.appendChild(cv);
+        drawRing(cv, c.pct, c.name, '#0ea5e9');
+      });
+    }
 
-    // Analytics charts
     const pieA = document.getElementById('analyticsPie');
     const barA = document.getElementById('analyticsBar');
-    drawPie(pieA,
+    if(pieA) drawPie(pieA,
       [{label:'Fat Loss',v:32,color:'#0ea5e9'},
        {label:'Strength',v:28,color:'#22c55e'},
        {label:'Muscle Gain',v:24,color:'#06b6d4'},
        {label:'Endurance',v:16,color:'#a78bfa'}]);
-    drawBar(barA, ['Sipho','Bianca','Keagan','Lerato'], [40, 55, 33, 28], {color:'#2563eb'});
+    if(barA) drawBar(barA, ['Sipho','Bianca','Keagan','Lerato'], [40, 55, 33, 28], {color:'#2563eb'});
+
+    // ------- PROGRESS CHARTS DRAWER -------
+    function drawProgressCharts(done){
+      // helpers
+      const $ = id => document.getElementById(id);
+      // line
+      drawLine($('#progressLine'), [20,28,31,35,40,46,50,56], {label:'Strength', color:'#1e3a8a'});
+      // pie
+      drawPie($('#progressPie'),
+        [{label:'Fat Loss',v:34,color:'#0ea5e9'},
+         {label:'Strength',v:26,color:'#22c55e'},
+         {label:'Muscle Gain',v:22,color:'#06b6d4'},
+         {label:'Endurance',v:18,color:'#a78bfa'}]);
+      // rings
+      drawRing($('#ringThabo'), 78, 'Thabo', '#2563eb');
+      drawRing($('#ringMegan'), 62, 'Megan', '#0ea5e9');
+      drawRing($('#ringChadwin'), 88, 'Chadwin', '#10b981');
+      // bar
+      drawBar($('#progressBar'),
+        ['Sipho','Bianca','Keagan'],
+        [18, 22, 15],
+        {color:'#1e3a8a'});
+      if(typeof done==='function') done();
+    }
 
     // ------- CANVAS DRAW HELPERS -------
     function drawLine(canvas, points, {label='', color='#1e3a8a'}={}){
       if(!canvas) return; const ctx=canvas.getContext('2d');
       const W=canvas.width, H=canvas.height; ctx.clearRect(0,0,W,H);
       const left=40, bottom=H-30, top=20, right=W-20;
-      // axes
       ctx.strokeStyle='#cfd8d3'; ctx.lineWidth=1;
       ctx.beginPath(); ctx.moveTo(left,top); ctx.lineTo(left,bottom); ctx.lineTo(right,bottom); ctx.stroke();
-      // grid
       ctx.strokeStyle='#e9f3ef';
       for(let i=0;i<4;i++){ const y=bottom-(i+1)*(bottom-top)/4; ctx.beginPath(); ctx.moveTo(left,y); ctx.lineTo(right,y); ctx.stroke(); }
-      // line
-      const max=Math.max(...points)*1.1;
-      const stepX=(right-left)/(points.length-1);
+      const max=Math.max(...points)*1.1; const stepX=(right-left)/(points.length-1);
       ctx.strokeStyle=color; ctx.lineWidth=3; ctx.beginPath();
       points.forEach((v,i)=>{ const x=left+i*stepX; const y=bottom-(v/max)*(bottom-top); if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y); });
       ctx.stroke();
-      // dots
       ctx.fillStyle=color;
       points.forEach((v,i)=>{ const x=left+i*stepX; const y=bottom-(v/max)*(bottom-top); ctx.beginPath(); ctx.arc(x,y,3,0,Math.PI*2); ctx.fill(); });
-      // label
       if(label){ ctx.fillStyle='#29443b'; ctx.font='bold 14px Inter'; ctx.fillText(label, left, top-4); }
     }
 
@@ -571,7 +633,6 @@
         const ang=(s.v/sum)*Math.PI*2;
         ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,a0,a0+ang); ctx.closePath();
         ctx.fillStyle=s.color; ctx.fill();
-        // label
         const mid=a0+ang/2; const lx=cx+Math.cos(mid)*(r+16), ly=cy+Math.sin(mid)*(r+16);
         ctx.fillStyle='#29443b'; ctx.font='12px Inter'; ctx.textAlign='center';
         ctx.fillText(s.label, lx, ly);
@@ -583,13 +644,10 @@
       if(!canvas) return; const ctx=canvas.getContext('2d');
       const W=canvas.width, H=canvas.height; ctx.clearRect(0,0,W,H);
       const cx=W/2, cy=H/2, r=Math.min(W,H)*0.38;
-      // bg circle
       ctx.strokeStyle='#e7efeb'; ctx.lineWidth=12; ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.stroke();
-      // fg arc
       const ang=pct/100*Math.PI*2;
       ctx.strokeStyle=color; ctx.lineWidth=12; ctx.lineCap='round';
       ctx.beginPath(); ctx.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+ang); ctx.stroke();
-      // text
       ctx.fillStyle='#0b1512'; ctx.font='bold 18px Inter'; ctx.textAlign='center';
       ctx.fillText(`${pct}%`, cx, cy+6);
       ctx.font='12px Inter'; ctx.fillStyle='#29443b'; ctx.fillText(label, cx, cy+26);
@@ -599,19 +657,15 @@
       if(!canvas) return; const ctx=canvas.getContext('2d');
       const W=canvas.width, H=canvas.height; ctx.clearRect(0,0,W,H);
       const left=50, bottom=H-30, top=20, right=W-20;
-      // axes
       ctx.strokeStyle='#cfd8d3'; ctx.lineWidth=1;
       ctx.beginPath(); ctx.moveTo(left,top); ctx.lineTo(left,bottom); ctx.lineTo(right,bottom); ctx.stroke();
-      // grid
       ctx.strokeStyle='#e9f3ef';
       for(let i=0;i<4;i++){ const y=bottom-(i+1)*(bottom-top)/4; ctx.beginPath(); ctx.moveTo(left,y); ctx.lineTo(right,y); ctx.stroke(); }
-      // bars
       const max=Math.max(...values)*1.2; const bw=(right-left)/values.length*0.6;
       values.forEach((v,i)=>{
         const x=left+(i+0.2)*((right-left)/values.length);
         const h=(v/max)*(bottom-top);
         ctx.fillStyle=color; ctx.fillRect(x, bottom-h, bw, h);
-        // labels
         ctx.fillStyle='#29443b'; ctx.font='12px Inter'; ctx.textAlign='center';
         ctx.fillText(labels[i], x+bw/2, bottom+16);
       });
