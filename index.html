@@ -11,12 +11,13 @@
       --g1:#0ad1b8;--g2:#10b981;
       --cta:#0891b2;--cta-ink:#001e24;--cta-ring:rgba(8,145,178,.35);
       --radius:18px;--shadow:0 18px 40px rgba(14,34,26,.14);
+      --overlay: rgba(6, 12, 10, 0.55);
     }
     *{box-sizing:border-box}
     html,body{margin:0;height:100%}
     body{
       font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Helvetica,Arial,sans-serif;
-      background:var(--bg);color:var(--ink);font-size:20px; /* increased */
+      background:var(--bg);color:var(--ink);font-size:20px;
     }
     a{color:#0f766e;text-decoration:none}
     a:hover{text-decoration:underline}
@@ -62,8 +63,9 @@
     .chip{
       display:inline-block;padding:8px 12px;border-radius:999px;
       background:#ebfffb;border:1px solid rgba(8,145,178,.25);
-      font-size:1rem;margin-right:8px
+      font-size:1rem;margin-right:8px;cursor:pointer;user-select:none;
     }
+    .chip:active{transform:scale(.98)}
     .price{font-weight:800;margin-top:10px;font-size:1.2rem}
 
     /* Chat */
@@ -71,8 +73,8 @@
     .log{flex:1;overflow:auto;padding:16px;border-radius:12px;background:#f4fbf8;border:1px solid var(--line)}
     .msg{margin:10px 0;max-width:82%}
     .me{margin-left:auto}
-    .bubble{padding:14px 16px;border-radius:12px;border:1px solid var(--line);background:#fff}
-    .bubble.me{background:#e9fffb;border-color:rgba(8,145,178,.35)}
+    .bubble{padding:14px 16px;border-radius:12px;border:1px solid var(--line);background:#fff;cursor:default}
+    .bubble.me{background:#e9fffb;border-color:rgba(8,145,178,.35);cursor:text}
     .meta{font-size:.9rem;color:var(--muted);margin-top:4px}
     .chat-form{display:flex;gap:10px;margin-top:12px}
     .input, textarea{
@@ -82,6 +84,32 @@
     }
 
     footer{margin:40px 0 20px;color:var(--muted);text-align:center;font-size:1.1rem}
+
+    /* Modal (dialog) */
+    .modal-backdrop{
+      position:fixed;inset:0;background:var(--overlay);
+      display:none;align-items:center;justify-content:center;
+      z-index:1000;animation:fadeIn .2s ease-out forwards;
+    }
+    .modal{
+      width:min(680px,92vw);background:#fff;color:#0b1512;border-radius:16px;
+      border:1px solid #e6efe9;box-shadow:0 20px 50px rgba(0,0,0,.35);
+      opacity:0;transform:translateY(8px);animation:riseIn .2s ease-out forwards;
+    }
+    .modal-header{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid #eef5f0}
+    .modal-title{font-weight:800;font-size:1.25rem}
+    .modal-close{background:transparent;border:none;font-size:1.6rem;line-height:1;cursor:pointer;color:#0b1512}
+    .modal-body{padding:18px}
+    .modal-body p{margin-top:0;margin-bottom:12px;color:#29443b}
+    .modal-footer{padding:14px 18px;border-top:1px solid #eef5f0;text-align:right}
+    .hidden{display:none!important}
+
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    @keyframes riseIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+    /* Canvas container for chart */
+    .chart-wrap{width:100%;height:240px;display:flex;align-items:center;justify-content:center}
+    canvas{max-width:100%}
 
     @media (max-width:980px){
       .logo{width:140px;height:140px}
@@ -132,19 +160,22 @@
         <div class="card col-4">
           <h3>1:1 Personal Training</h3>
           <p>Technique-first strength & conditioning tailored to your goals and schedule.</p>
-          <div class="chip">Gym / Home</div><div class="chip">Custom Plan</div>
+          <span class="chip" data-modal="gymhome">Gym / Home</span>
+          <span class="chip" data-modal="customplan">Custom Plan</span>
           <div class="price">From R399 / session</div>
         </div>
         <div class="card col-4">
           <h3>Online Coaching</h3>
           <p>Weekly check-ins, habit systems, and progressive programming via client portal.</p>
-          <div class="chip">Progress Tracking</div><div class="chip">Video Form Checks</div>
+          <span class="chip" data-modal="progress">Progress Tracking</span>
+          <span class="chip" data-modal="videochecks">Video Form Checks</span>
           <div class="price">From R899 / month</div>
         </div>
         <div class="card col-4">
           <h3>Small Group (2–6)</h3>
           <p>Train with friends or family. Shared motivation, reduced cost, same pro guidance.</p>
-          <div class="chip">Team Energy</div><div class="chip">Budget Friendly</div>
+          <span class="chip" data-modal="teamenergy">Team Energy</span>
+          <span class="chip" data-modal="budget">Budget Friendly</span>
           <div class="price">From R249 / person</div>
         </div>
       </div>
@@ -234,11 +265,28 @@
 
   </div>
 
+  <!-- Modal container (reused for all chips) -->
+  <div id="modalBackdrop" class="modal-backdrop hidden" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-header">
+        <div id="modalTitle" class="modal-title">Modal</div>
+        <button id="modalClose" class="modal-close" aria-label="Close">×</button>
+      </div>
+      <div id="modalBody" class="modal-body"></div>
+      <div class="modal-footer">
+        <button id="modalClose2" class="btn" type="button">Close</button>
+      </div>
+    </div>
+  </div>
+
   <script>
+    // --- Smooth section scroll via hero buttons (kept) ---
     const introBtn=document.getElementById('ctaIntro');
     const chatBtn=document.getElementById('ctaChat');
     introBtn.addEventListener('click',()=>document.getElementById('contact').scrollIntoView({behavior:'smooth'}));
     chatBtn.addEventListener('click',()=>document.getElementById('community').scrollIntoView({behavior:'smooth'}));
+
+    // --- Contact form demo (kept) ---
     function demoSubmit(form){
       const name=form.name.value.trim();
       const toast=document.getElementById('toast');
@@ -246,17 +294,163 @@
       form.reset();
       setTimeout(()=>toast.textContent='',4200);
     }
+
+    // --- Local chat with editable own messages ---
     const KEY='wellweight_chat_v2';
     const log=document.getElementById('log');
-    const form=document.getElementById('chatForm');
+    const formEl=document.getElementById('chatForm');
     const nameI=document.getElementById('name');
     const textI=document.getElementById('text');
+
     const load=()=>{try{return JSON.parse(localStorage.getItem(KEY))||[]}catch{return []}};
     const save=(L)=>localStorage.setItem(KEY,JSON.stringify(L));
-    const render=()=>{const L=load();log.innerHTML='';L.forEach(m=>{const w=document.createElement('div');w.className='msg '+(m.me?'me':'');const b=document.createElement('div');b.className='bubble '+(m.me?'me':'');b.textContent=m.text;const meta=document.createElement('div');meta.className='meta';meta.textContent=`${m.name} • ${new Date(m.at).toLocaleString()}`;w.appendChild(b);w.appendChild(meta);log.appendChild(w);});log.scrollTop=log.scrollHeight;};
-    form.addEventListener('submit',e=>{e.preventDefault();const n=(nameI.value||'Guest').trim();const t=(textI.value||'').trim();if(!t)return;const you=/fred|siphelo/i.test(n);const L=load();L.push({name:n,text:t,at:Date.now(),me:you});save(L);textI.value='';render();});
+
+    function render(){
+      const L=load(); log.innerHTML='';
+      L.forEach((m,idx)=>{
+        const wrap=document.createElement('div'); wrap.className='msg '+(m.me?'me':'');
+        const b=document.createElement('div'); b.className='bubble '+(m.me?'me':''); b.textContent=m.text; b.dataset.idx=idx;
+        const meta=document.createElement('div'); meta.className='meta'; meta.textContent=`${m.name} • ${new Date(m.at).toLocaleString()}`;
+        wrap.appendChild(b); wrap.appendChild(meta); log.appendChild(wrap);
+      });
+      log.scrollTop=log.scrollHeight;
+    }
+
+    // Submit new message
+    formEl.addEventListener('submit',e=>{
+      e.preventDefault();
+      const n=(nameI.value||'Guest').trim();
+      const t=(textI.value||'').trim();
+      if(!t) return;
+      const you=/fred|siphelo/i.test(n);
+      const L=load();
+      L.push({name:n,text:t,at:Date.now(),me:you});
+      save(L);
+      textI.value=''; render();
+    });
+
+    // Click-to-edit for "me" messages
+    log.addEventListener('click',e=>{
+      const target=e.target;
+      if(!target.classList.contains('bubble')) return;
+      const idx=+target.dataset.idx;
+      const L=load();
+      const msg=L[idx]; if(!msg || !msg.me) return; // only your own messages editable
+
+      // Replace bubble with input
+      const input=document.createElement('input');
+      input.type='text';
+      input.value=msg.text;
+      input.className='input';
+      input.style.width='100%';
+      target.replaceWith(input);
+      input.focus();
+      input.selectionStart=input.selectionEnd=input.value.length;
+
+      const commit=()=>{
+        msg.text=input.value.trim()||msg.text;
+        L[idx]=msg; save(L); render();
+      };
+      input.addEventListener('blur',commit);
+      input.addEventListener('keydown',ev=>{ if(ev.key==='Enter') { commit(); } });
+    });
+
     render();
     document.getElementById('year').textContent=new Date().getFullYear();
+
+    // --- Modal system for chips (with fade-in) ---
+    const MODALS = {
+      gymhome: {
+        title: "Gym / Home",
+        body: `<p>Train anywhere: at your local gym or in the comfort of your home. Programmes adapt to your equipment and space.</p>`
+      },
+      customplan: {
+        title: "Custom Plan",
+        body: `<p>Your personal programme built around your goals, schedule, and recovery. Weekly adjustments keep you progressing.</p>`
+      },
+      progress: {
+        title: "Progress Tracking",
+        body: `<p>See consistent improvement with simple weekly tracking. Below is a mock graph of strength over 8 weeks.</p>
+               <div class="chart-wrap"><canvas id="progressChart" width="620" height="220"></canvas></div>`
+      },
+      teamenergy: {
+        title: "Team Energy",
+        body: `<p>Small-group sessions keep motivation high with shared energy, accountability, and friendly competition.</p>`
+      },
+      budget: {
+        title: "Budget Friendly",
+        body: `<p>Get pro-level coaching that fits your budget — share a session, save per person, keep the same expert guidance.</p>`
+      },
+      videochecks: {
+        title: "Video Form Checks",
+        body: `<p>Upload short clips for feedback on technique, posture, and tempo. We’ll refine cues so every rep counts.</p>`
+      }
+    };
+
+    const backdrop = document.getElementById('modalBackdrop');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody  = document.getElementById('modalBody');
+    const closeBtns  = [document.getElementById('modalClose'), document.getElementById('modalClose2')];
+
+    function openModal(key){
+      const data = MODALS[key]; if(!data) return;
+      modalTitle.textContent = data.title;
+      modalBody.innerHTML = data.body;
+      backdrop.classList.remove('hidden');
+      backdrop.style.display = 'flex';
+
+      // If progress chart, draw it (blue line)
+      if(key === 'progress'){
+        const c = document.getElementById('progressChart');
+        if(c && c.getContext){
+          const ctx = c.getContext('2d');
+          // clear
+          ctx.clearRect(0,0,c.width,c.height);
+          // axes
+          ctx.lineWidth = 1; ctx.strokeStyle = '#cfd8d3';
+          ctx.beginPath(); ctx.moveTo(40,10); ctx.lineTo(40,190); ctx.lineTo(600,190); ctx.stroke();
+
+          // mock data
+          const points = [20,28,31,35,40,46,50,56]; // upward trend
+          const stepX = (560)/(points.length-1);
+          const baseY = 180, max=60;
+
+          // grid
+          ctx.strokeStyle = '#e9f3ef'; ctx.lineWidth = 1;
+          for(let i=0;i<=4;i++){ const y=baseY - (i*(140/4)); ctx.beginPath(); ctx.moveTo(40,y); ctx.lineTo(600,y); ctx.stroke(); }
+
+          // line (blue)
+          ctx.strokeStyle = '#1e3a8a'; ctx.lineWidth = 3;
+          ctx.beginPath();
+          points.forEach((v,i)=>{
+            const x = 40 + i*stepX;
+            const y = baseY - (v/max)*140;
+            if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+          });
+          ctx.stroke();
+
+          // dots
+          ctx.fillStyle = '#1e3a8a';
+          points.forEach((v,i)=>{
+            const x = 40 + i*stepX;
+            const y = baseY - (v/max)*140;
+            ctx.beginPath(); ctx.arc(x,y,3,0,Math.PI*2); ctx.fill();
+          });
+        }
+      }
+    }
+    function closeModal(){
+      backdrop.classList.add('hidden');
+      backdrop.style.display = 'none';
+      modalBody.innerHTML = '';
+    }
+    closeBtns.forEach(b=>b.addEventListener('click', closeModal));
+    backdrop.addEventListener('click', (e)=>{ if(e.target === backdrop) closeModal(); });
+
+    // Wire chips
+    document.querySelectorAll('.chip[data-modal]').forEach(ch=>{
+      ch.addEventListener('click', ()=> openModal(ch.dataset.modal));
+    });
   </script>
 </body>
 </html>
