@@ -1,0 +1,381 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Siphelo’s WellWeight — Fitness • Coaching • Supplements</title>
+  <meta name="description" content="Prototype site for Siphelo’s WellWeight: personal training, client community chat, and supplements (protein & creatine)." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0e1412;      /* deep evergreen */
+      --panel:#121a17;   /* card bg */
+      --ink:#e6f3ec;     /* primary text */
+      --muted:#b8d1c3;   /* secondary text */
+      --leaf1:#38b000;   /* vibrant leaf */
+      --leaf2:#70e000;   /* bright leaf */
+      --leaf3:#008000;   /* dark leaf */
+      --accent:#00c2a8;  /* teal accent */
+      --ring:rgba(0,194,168,.35);
+      --shadow:0 20px 45px rgba(0,0,0,.45);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;height:100%}
+    body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Helvetica,Arial,sans-serif;background:linear-gradient(180deg,#0b110f,#0f1613 30%, #111a16 100%);color:var(--ink)}
+    a{color:var(--accent);text-decoration:none}
+    a:hover{text-decoration:underline}/* Layout */
+.wrap{max-width:1200px;margin:0 auto;padding:28px}
+
+/* Header */
+header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}
+.brand{display:flex;align-items:center;gap:14px}
+.logo{width:52px;height:52px;filter:drop-shadow(0 10px 20px rgba(0,0,0,.35))}
+.title{font-weight:800;letter-spacing:.2px}
+.tag{font-size:.9rem;color:var(--muted)}
+nav a{margin:0 10px;font-weight:600}
+
+/* Hero */
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:22px;align-items:center;margin:12px 0 26px}
+.card{background:linear-gradient(180deg,var(--panel),#0f1814);border:1px solid rgba(255,255,255,.06);border-radius:var(--radius);box-shadow:var(--shadow)}
+.hero .card{padding:28px}
+.hero h1{margin:0 0 10px;font-size:2.2rem}
+.hero p{margin:0 0 14px;color:var(--muted)}
+.cta{display:flex;gap:12px;margin-top:10px}
+.btn{background:var(--accent);color:#022; padding:12px 16px;border-radius:12px;border:none;font-weight:800;cursor:pointer;box-shadow:0 10px 25px var(--ring)}
+.btn.alt{background:transparent;color:var(--ink);border:1px solid rgba(255,255,255,.12)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+.stat{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:12px;text-align:center}
+.stat b{display:block;font-size:1.3rem}
+
+/* Sections */
+section{margin:34px 0}
+.section-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px}
+h2{margin:0;font-size:1.5rem}
+.kicker{color:var(--muted);font-size:.95rem}
+
+/* Services */
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+.col-4{grid-column:span 4}
+.col-6{grid-column:span 6}
+.col-8{grid-column:span 8}
+.tile{background:linear-gradient(180deg,var(--panel),#0f1814);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:18px;box-shadow:var(--shadow)}
+.tile h3{margin:0 0 8px}
+.price{font-weight:800;font-size:1.1rem;margin-top:6px}
+.chip{display:inline-block;padding:5px 9px;border-radius:999px;background:rgba(0,194,168,.15);border:1px solid var(--ring);font-size:.8rem;margin-right:6px}
+
+/* Supplements */
+.card-img{height:150px;border-radius:12px;background:linear-gradient(120deg, rgba(56,176,0,.2), rgba(0,194,168,.15));display:flex;align-items:center;justify-content:center;margin-bottom:12px;border:1px solid rgba(255,255,255,.06)}
+
+/* Community Chat */
+.chat{display:flex;flex-direction:column;height:420px}
+.chat-log{flex:1;overflow:auto;padding:12px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)}
+.msg{margin:8px 0;max-width:80%}
+.me{margin-left:auto}
+.bubble{padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.06);background:linear-gradient(180deg,#13201b,#0f1814)}
+.bubble.me{background:linear-gradient(180deg,#143c33,#0f1814);border-color:rgba(0,194,168,.35)}
+.meta{font-size:.72rem;color:var(--muted);margin-top:3px}
+.chat-form{display:flex;gap:8px;margin-top:10px}
+.input, textarea{flex:1;background:#0c1411;color:var(--ink);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px}
+
+/* Footer */
+footer{margin:34px 0 18px;color:var(--muted);text-align:center}
+
+/* Responsive */
+@media (max-width: 980px){
+  .hero{grid-template-columns:1fr}
+  .grid{grid-template-columns:1fr}
+  .col-4,.col-6,.col-8{grid-column:span 1}
+}
+
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <!-- Simple 3-leaf logo (SVG) -->
+        <svg class="logo" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-label="Siphelo’s WellWeight">
+          <defs>
+            <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="var(--leaf2)"/>
+              <stop offset="100%" stop-color="var(--leaf1)"/>
+            </linearGradient>
+            <linearGradient id="g2" x1="1" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="var(--leaf1)"/>
+              <stop offset="100%" stop-color="var(--leaf3)"/>
+            </linearGradient>
+          </defs>
+          <!-- left leaf -->
+          <path d="M40,70 C10,55 18,20 52,22 C56,42 53,58 40,70 Z" fill="url(#g2)"/>
+          <!-- right leaf -->
+          <path d="M80,70 C110,55 102,20 68,22 C64,42 67,58 80,70 Z" fill="url(#g1)"/>
+          <!-- top leaf -->
+          <path d="M60,18 C76,10 92,26 84,42 C70,38 60,33 60,18 Z" fill="url(#g1)"/>
+          <!-- stem -->
+          <rect x="57" y="60" width="6" height="30" rx="3" fill="#1c3f2f"/>
+        </svg>
+        <div>
+          <div class="title">Siphelo’s WellWeight</div>
+          <div class="tag">Personal Training • Community • Supplements</div>
+        </div>
+      </div>
+      <nav>
+        <a href="#services">Services</a>
+        <a href="#supplements">Supplements</a>
+        <a href="#community">Community</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </header><!-- HERO -->
+<div class="hero">
+  <div class="card">
+    <h1>Stronger body. Clearer mind. <span style="color:var(--leaf2)">Sustainable</span> results.</h1>
+    <p>Train with Siphelo, track your progress, and connect with a supportive client community. Protein & creatine options available.</p>
+    <div class="cta">
+      <button class="btn" onclick="scrollToId('services')">Book a Free Intro</button>
+      <button class="btn alt" onclick="scrollToId('community')">Open Client Chat</button>
+    </div>
+    <div class="stats">
+      <div class="stat"><b id="statClients">120+</b><span class="muted">Active Clients</span></div>
+      <div class="stat"><b>8+ yrs</b><span class="muted">Coaching</span></div>
+      <div class="stat"><b>4.9★</b><span class="muted">Client Rating</span></div>
+    </div>
+  </div>
+  <div class="card" style="padding:0;overflow:hidden">
+    <!-- Simple hero visual -->
+    <div class="card-img" style="height:100%;min-height:260px;display:grid;place-items:center">
+      <svg viewBox="0 0 240 200" width="88%" aria-hidden="true">
+        <defs>
+          <linearGradient id="plate" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#bfffd7"/>
+            <stop offset="100%" stop-color="#71ffc6"/>
+          </linearGradient>
+        </defs>
+        <!-- barbell -->
+        <rect x="30" y="95" width="180" height="10" rx="5" fill="url(#plate)"/>
+        <rect x="38" y="80" width="16" height="40" rx="6" fill="#9ff0cd"/>
+        <rect x="186" y="80" width="16" height="40" rx="6" fill="#9ff0cd"/>
+        <!-- heartbeat line -->
+        <polyline points="20,150 60,150 80,120 95,165 115,110 140,150 220,150" fill="none" stroke="#93ffd9" stroke-width="4"/>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="section-head">
+    <h2>Coaching Services</h2>
+    <div class="kicker">In-person & online programmes</div>
+  </div>
+  <div class="grid">
+    <div class="tile col-4">
+      <h3>1:1 Personal Training</h3>
+      <p>Technique-first strength & conditioning tailored to your goals and schedule.</p>
+      <div class="chip">Gym / Home</div><div class="chip">Custom Plan</div>
+      <div class="price">From R399 / session</div>
+    </div>
+    <div class="tile col-4">
+      <h3>Online Coaching</h3>
+      <p>Weekly check-ins, habit systems, and progressive programming via the client portal.</p>
+      <div class="chip">Progress Tracking</div><div class="chip">Video Form Checks</div>
+      <div class="price">From R899 / month</div>
+    </div>
+    <div class="tile col-4">
+      <h3>Small Group (2–6)</h3>
+      <p>Train with friends or family. Shared motivation, reduced cost, same pro guidance.</p>
+      <div class="chip">Team Energy</div><div class="chip">Budget Friendly</div>
+      <div class="price">From R249 / person</div>
+    </div>
+  </div>
+</section>
+
+<!-- SUPPLEMENTS -->
+<section id="supplements">
+  <div class="section-head">
+    <h2>Supplements</h2>
+    <div class="kicker">Protein & creatine for better recovery and strength</div>
+  </div>
+  <div class="grid">
+    <div class="tile col-6">
+      <div class="card-img">
+        <!-- Protein bag icon -->
+        <svg viewBox="0 0 200 120" width="88%">
+          <rect x="40" y="15" width="120" height="90" rx="12" fill="rgba(0,194,168,.25)" stroke="var(--ring)"/>
+          <rect x="55" y="28" width="90" height="10" rx="5" fill="#71ffc6"/>
+          <circle cx="100" cy="75" r="22" fill="#9ff0cd"/>
+        </svg>
+      </div>
+      <h3>Whey Protein (1kg)</h3>
+      <p>Smooth blend for muscle repair. Delicious vanilla & chocolate options.</p>
+      <div class="price">From R399</div>
+    </div>
+    <div class="tile col-6">
+      <div class="card-img">
+        <!-- Creatine tub icon -->
+        <svg viewBox="0 0 200 120" width="88%">
+          <rect x="60" y="20" width="80" height="50" rx="8" fill="rgba(0,194,168,.25)" stroke="var(--ring)"/>
+          <rect x="55" y="70" width="90" height="25" rx="8" fill="#71ffc6"/>
+        </svg>
+      </div>
+      <h3>Creatine Monohydrate (300g)</h3>
+      <p>Clinically-backed for strength & power. Pure, unflavoured, easy to mix.</p>
+      <div class="price">From R249</div>
+    </div>
+  </div>
+</section>
+
+<!-- COMMUNITY / CHAT (Prototype, persists to localStorage) -->
+<section id="community">
+  <div class="section-head">
+    <h2>Client Community</h2>
+    <div class="kicker">Lightweight chat prototype — messages persist in your browser</div>
+  </div>
+  <div class="grid">
+    <div class="tile col-8">
+      <div class="chat">
+        <div id="chatLog" class="chat-log" aria-live="polite" aria-label="Client chat log"></div>
+        <form id="chatForm" class="chat-form" autocomplete="off">
+          <input id="chatName" class="input" placeholder="Your name" required />
+          <input id="chatMsg" class="input" placeholder="Write a message…" required />
+          <button class="btn" type="submit" title="Send">Send</button>
+        </form>
+      </div>
+      <p class="kicker" style="margin-top:10px">Note: This is a <em>prototype</em>. For production, we can plug in real-time messaging (Supabase, Firebase, or Stream) for synced, durable chat across devices.</p>
+    </div>
+    <div class="tile col-4">
+      <h3>Member Perks</h3>
+      <ul>
+        <li>Weekly Q&A with Siphelo</li>
+        <li>Form checks (video)</li>
+        <li>Habit & streak tracking</li>
+        <li>Progress templates (PDF)</li>
+      </ul>
+      <button class="btn" style="width:100%;margin-top:12px" onclick="alert('Coming soon: secure client portal sign-in')">Enter Client Portal</button>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT / BOOKING -->
+<section id="contact">
+  <div class="section-head">
+    <h2>Book Your Free Intro</h2>
+    <div class="kicker">Tell us your goal — we’ll recommend the best programme</div>
+  </div>
+  <div class="grid">
+    <form class="tile col-6" onsubmit="event.preventDefault(); demoSubmit(this)">
+      <label>Name<br><input class="input" name="name" required></label><br><br>
+      <label>Email<br><input class="input" name="email" type="email" required></label><br><br>
+      <label>Goal<br>
+        <select class="input" name="goal">
+          <option>Fat loss</option>
+          <option>Strength</option>
+          <option>Hypertrophy</option>
+          <option>General fitness</option>
+        </select>
+      </label><br><br>
+      <label>Message<br><textarea class="input" name="msg" rows="4" placeholder="Hi – I’d like help with…"></textarea></label><br>
+      <button class="btn" type="submit">Request Consult</button>
+      <span id="formToast" class="kicker" style="margin-left:10px"></span>
+    </form>
+    <div class="tile col-6">
+      <h3>Location & Hours</h3>
+      <p>Cape Town • Mon–Sat • 6:00–19:00</p>
+      <h3>Socials</h3>
+      <p><a href="#">Instagram</a> • <a href="#">YouTube</a> • <a href="#">WhatsApp</a></p>
+      <h3>Brand Kit</h3>
+      <p>Primary: Evergreen (var(--leaf1)), Teal (var(--accent))<br>Neutral: Deep charcoal, off‑white</p>
+      <p class="kicker">Logo: 3‑leaf motif → growth, vitality, balance</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  © <span id="year"></span> Siphelo’s WellWeight • Prototype by Fred
+</footer>
+
+  </div>  <script>
+    // Smooth scroll
+    function scrollToId(id){ document.querySelector('#'+id)?.scrollIntoView({behavior:'smooth', block:'start'}); }
+
+    // Demo stats ticker (just for life)
+    const stat = document.getElementById('statClients');
+    let n = 120; setInterval(()=>{ n = Math.min(999, n + (Math.random()>0.5?1:0)); stat.textContent = n + "+"; }, 2600);
+
+    // Contact demo handler
+    function demoSubmit(form){
+      const name = form.name.value.trim();
+      document.getElementById('formToast').textContent = `Thanks, ${name}. We’ll email you a schedule within 24h.`;
+      form.reset();
+      setTimeout(()=>{document.getElementById('formToast').textContent='';}, 4200);
+    }
+
+    // Lightweight Community Chat (localStorage persistence)
+    const CHAT_KEY = 'wellweight_chat_v1';
+    const chatLog = document.getElementById('chatLog');
+    const chatForm = document.getElementById('chatForm');
+    const chatName = document.getElementById('chatName');
+    const chatMsg = document.getElementById('chatMsg');
+
+    function loadChat(){
+      const raw = localStorage.getItem(CHAT_KEY);
+      try{ return raw? JSON.parse(raw) : []; }catch{ return []; }
+    }
+    function saveChat(list){ localStorage.setItem(CHAT_KEY, JSON.stringify(list)); }
+
+    function renderChat(){
+      const list = loadChat();
+      chatLog.innerHTML = '';
+      for(const m of list){
+        const wrap = document.createElement('div');
+        wrap.className = 'msg ' + (m.me? 'me' : '');
+        const b = document.createElement('div'); b.className = 'bubble ' + (m.me? 'me' : ''); b.textContent = m.text;
+        const meta = document.createElement('div'); meta.className = 'meta'; meta.textContent = `${m.name} • ${new Date(m.at).toLocaleString()}`;
+        wrap.appendChild(b); wrap.appendChild(meta); chatLog.appendChild(wrap);
+      }
+      chatLog.scrollTo({top: chatLog.scrollHeight, behavior:'smooth'});
+    }
+
+    chatForm.addEventListener('submit', e=>{
+      e.preventDefault();
+      const name = chatName.value.trim() || 'Guest';
+      const text = chatMsg.value.trim();
+      if(!text) return;
+      const you = (name.toLowerCase().includes('fred') || name.toLowerCase().includes('siphelo'));
+      const next = loadChat();
+      next.push({name, text, at: Date.now(), me: you});
+      saveChat(next);
+      chatMsg.value='';
+      renderChat();
+    });
+
+    renderChat();
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    /*
+      PWA NOTE (optional, when you want an installable app):
+      1) Create a file named manifest.json at site root with minimal content:
+         {
+           "name": "Siphelo’s WellWeight",
+           "short_name": "WellWeight",
+           "start_url": "/",
+           "display": "standalone",
+           "background_color": "#0e1412",
+           "theme_color": "#00c2a8",
+           "icons": [
+             {"src": "/icons/icon-192.png","sizes": "192x192","type": "image/png"},
+             {"src": "/icons/icon-512.png","sizes": "512x512","type": "image/png"}
+           ]
+         }
+      2) Link it in <head>:
+         <link rel="manifest" href="/manifest.json">
+      3) Add a minimal sw.js and register it (from your domain, not blob):
+         self.addEventListener('install', e=>self.skipWaiting());
+         self.addEventListener('activate', e=>self.clients.claim());
+         self.addEventListener('fetch', ()=>{});
+         // In index.js: navigator.serviceWorker.register('/sw.js');
+      This will make the site installable on Android and desktop (GitHub Pages compatible).
+    */
+  </script></body>
+</html>
