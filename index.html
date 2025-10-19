@@ -482,19 +482,16 @@
       },
       progress: {
         title: "Progress Tracking",
-        charts: true, // flag tells renderer to wait and draw
+        charts: true, // ONLY Line + Pie + Bar (no rings)
         bodyHTML: `
-          <p>See consistent improvement with simple weekly tracking:</p>
+          <p>Track weekly improvements with visual feedback:</p>
           <div class="chart-grid">
             <div class="chart-wrap"><canvas id="progressLine" width="360" height="220"></canvas></div>
             <div class="chart-wrap"><canvas id="progressPie" width="360" height="220"></canvas></div>
           </div>
-          <div class="ring-row" style="margin-top:14px">
-            <canvas id="ringThabo" width="120" height="120" title="Thabo"></canvas>
-            <canvas id="ringMegan" width="120" height="120" title="Megan"></canvas>
-            <canvas id="ringChadwin" width="120" height="120" title="Chadwin"></canvas>
+          <div class="chart-wrap" style="margin-top:18px">
+            <canvas id="progressBar" width="720" height="220"></canvas>
           </div>
-          <div class="chart-wrap" style="margin-top:14px"><canvas id="progressBar" width="720" height="220"></canvas></div>
         `
       },
       teamenergy: {
@@ -598,11 +595,8 @@
       const lineEl = document.getElementById('progressLine');
       const pieEl  = document.getElementById('progressPie');
       const barEl  = document.getElementById('progressBar');
-      const ringTh = document.getElementById('ringThabo');
-      const ringMe = document.getElementById('ringMegan');
-      const ringCh = document.getElementById('ringChadwin');
 
-      // Multi-colour palette
+      // Shared palette
       const colors = {
         blue: '#2563eb',
         green: '#10b981',
@@ -612,113 +606,44 @@
         gray:  '#e5e7eb'
       };
 
-      // Center text plugin for ring charts
-      const ringText = {
-        id:'ringText',
-        afterDraw(chart, args, opts){
-          const {ctx, chartArea:{width, height}} = chart;
-          const meta = chart.config.data._metaLabel || {};
-          ctx.save();
-          ctx.textAlign='center';
-          ctx.fillStyle='#0b1512';
-          ctx.font='bold 16px Inter';
-          ctx.fillText(`${meta.pct || 0}%`, width/2, height/2 + 6);
-          ctx.font='12px Inter';
-          ctx.fillStyle='#29443b';
-          ctx.fillText(meta.label || '', width/2, height/2 + 26);
-          ctx.restore();
-        }
-      };
-
-      // Create charts
       if(lineEl){
-        const line = new Chart(lineEl, {
-          type: 'line',
-          data: {
-            labels: ['W1','W2','W3','W4','W5','W6','W7','W8'],
-            datasets: [{
-              label: 'Strength (kg)',
-              data: [20,28,31,35,40,46,50,56],
-              borderColor: colors.blue,
-              backgroundColor: 'transparent',
-              tension: 0.35
+        const line = new Chart(lineEl,{
+          type:'line',
+          data:{
+            labels:['W1','W2','W3','W4','W5','W6','W7','W8'],
+            datasets:[{
+              label:'Strength (kg)',
+              data:[20,28,31,35,40,46,50,56],
+              borderColor:colors.teal,
+              backgroundColor:'transparent',
+              tension:0.35
             }]
           },
-          options: {
-            responsive: true,
-            plugins: { legend: { display: true } },
-            scales: { y: { beginAtZero: true } }
-          }
+          options:{responsive:true,plugins:{legend:{display:true}},scales:{y:{beginAtZero:true}}}
         });
         _progressCharts.push(line);
       }
 
       if(pieEl){
-        const pie = new Chart(pieEl, {
-          type: 'doughnut',
-          data: {
-            labels: ['Fat Loss','Strength','Muscle Gain','Endurance'],
-            datasets: [{
-              data: [34,26,22,18],
-              backgroundColor: [colors.blue, colors.green, colors.purple, colors.orange]
-            }]
+        const pie = new Chart(pieEl,{
+          type:'doughnut',
+          data:{
+            labels:['Fat Loss','Strength','Muscle Gain','Endurance'],
+            datasets:[{data:[34,26,22,18],backgroundColor:[colors.blue,colors.green,colors.purple,colors.orange]}]
           },
-          options: {
-            responsive: true,
-            cutout: '40%',
-            plugins: { legend: { position: 'bottom' } }
-          }
+          options:{responsive:true,cutout:'40%',plugins:{legend:{position:'bottom'}}}
         });
         _progressCharts.push(pie);
       }
 
-      // Rings
-      function ring(canvas, pct, label, color){
-        if(!canvas) return null;
-        const chart = new Chart(canvas, {
-          type: 'doughnut',
-          data: {
-            labels: ['Complete', 'Remaining'],
-            datasets: [{
-              data: [pct, Math.max(0, 100 - pct)],
-              backgroundColor: [color, colors.gray],
-              borderWidth: 0
-            }]
-          },
-          options: {
-            responsive: true,
-            cutout: '70%',
-            rotation: -90,
-            plugins: { legend: { display: false } }
-          },
-          plugins: [ringText]
-        });
-        // pass label/pct to plugin
-        chart.config.data._metaLabel = { pct, label };
-        return chart;
-      }
-
-      const r1 = ring(ringTh, 78, 'Thabo', colors.blue);
-      const r2 = ring(ringMe, 62, 'Megan', colors.teal);
-      const r3 = ring(ringCh, 88, 'Chadwin', colors.green);
-      [r1,r2,r3].forEach(ch => ch && _progressCharts.push(ch));
-
       if(barEl){
-        const bar = new Chart(barEl, {
-          type: 'bar',
-          data: {
-            labels: ['Sipho','Bianca','Keagan'],
-            datasets: [{
-              label: 'Sessions Completed',
-              data: [18,22,15],
-              backgroundColor: [colors.purple, colors.blue, colors.orange]
-            }]
+        const bar = new Chart(barEl,{
+          type:'bar',
+          data:{
+            labels:['Sipho','Bianca','Keagan','Lerato'],
+            datasets:[{label:'Sessions Completed',data:[18,22,15,20],backgroundColor:[colors.purple,colors.teal,colors.orange,colors.green]}]
           },
-          options: {
-            responsive: true,
-            plugins: { legend: { display: false } },
-            scales: { y: { beginAtZero: true } }
-          }
+          options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}
         });
         _progressCharts.push(bar);
       }
